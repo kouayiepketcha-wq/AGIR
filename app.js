@@ -1783,7 +1783,6 @@ function setupCashModal() {
     const conversionBox = document.getElementById('cash-modal-conversion-box');
     const amountLabel = document.getElementById('amount-input-label');
     const amountSuffix = document.getElementById('cash-modal-suffix');
-    const phoneField = document.getElementById('phone-number-field');
     const cardField = document.getElementById('card-form-field');
     const amountInput = document.getElementById('cash-modal-amount');
     const pinField = document.getElementById('cash-modal-pin');
