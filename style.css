@@ -3090,3 +3090,178 @@ input:checked + .slider:before {
         padding: 10px;
     }
 }
+
+/* ==========================================================================
+   14. Phone Device Simulator & Layout Fit (Desktop Mockup)
+   ========================================================================== */
+@media (min-width: 1025px) {
+    body {
+        background: radial-gradient(circle at center, #0e1726 0%, #060a12 100%) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 100vh !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .phone-device {
+        width: 395px;
+        height: 840px;
+        background: #060a12;
+        border: 12px solid #1a2333;
+        border-radius: 48px;
+        box-shadow: 0 35px 70px rgba(0, 0, 0, 0.8),
+                    0 0 0 2px rgba(255, 255, 255, 0.05),
+                    0 0 40px rgba(212, 175, 55, 0.15);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Smartphone Notch */
+    .phone-device::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 26px;
+        background: #1a2333;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+        z-index: 1000;
+    }
+
+    /* Smartphone Home Bar Indicator */
+    .phone-device::after {
+        content: '';
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 130px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 3px;
+        z-index: 1000;
+    }
+
+    .app-layout {
+        height: 100% !important;
+        grid-template-columns: 1fr !important;
+        overflow: hidden !important;
+    }
+
+    .sidebar {
+        display: none !important;
+    }
+
+    .mobile-bottom-nav {
+        display: flex !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        background: rgba(10, 15, 29, 0.95) !important;
+    }
+
+    .main-workspace {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    .view-viewport {
+        height: calc(100% - 150px) !important; /* space for header (80px) and bottom nav (70px) */
+        overflow-y: auto !important;
+        padding: 16px !important;
+        padding-bottom: 30px !important;
+    }
+
+    /* Style inner scrollbar to be modern and subtle */
+    .view-viewport::-webkit-scrollbar {
+        width: 3px !important;
+    }
+    .view-viewport::-webkit-scrollbar-track {
+        background: transparent !important;
+    }
+    .view-viewport::-webkit-scrollbar-thumb {
+        background: rgba(212, 175, 55, 0.15) !important;
+        border-radius: 2px !important;
+    }
+}
+
+/* ==========================================================================
+   15. Inline Actions Inside Total Assets Card & Header Avatar
+   ========================================================================== */
+.card-action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.card-action-buttons button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: var(--transition-smooth);
+}
+
+.card-action-buttons .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+    color: var(--bg-main) !important;
+    border: none !important;
+}
+.card-action-buttons .btn-primary:hover {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+.card-action-buttons .btn-secondary {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+.card-action-buttons .btn-secondary:hover {
+    border-color: var(--border-active) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: translateY(-1px);
+}
+
+/* Circular header avatar styling */
+.header-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid var(--primary);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-user-avatar:hover {
+    transform: scale(1.05);
+    border-color: var(--primary-glow);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+.header-user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

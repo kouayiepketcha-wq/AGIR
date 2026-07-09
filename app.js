@@ -241,8 +241,8 @@ const BVMAC_FCP = [
     {
         ticker: 'AGFL',
         name: 'AGIR Flex',
-        fullName: 'FCP AGIR Flex (Fonds Monétaire Liquide)',
-        sector: 'Fonds AGIR',
+        fullName: 'AGIR Flex (Fonds Monétaire Liquide)',
+        sector: 'Produits AGIR',
         sectorKey: 'fcp-agir',
         price: 1000,
         change: 0.1,
@@ -269,8 +269,8 @@ const BVMAC_FCP = [
     {
         ticker: 'AGTE',
         name: 'AGIR Team',
-        fullName: 'FCP AGIR Team (Fonds d\'Investissement Coopératif)',
-        sector: 'Fonds AGIR',
+        fullName: 'AGIR Team (Fonds d\'Investissement Coopératif)',
+        sector: 'Produits AGIR',
         sectorKey: 'fcp-agir',
         price: 1500,
         change: 0.4,
@@ -297,8 +297,8 @@ const BVMAC_FCP = [
     {
         ticker: 'AGOB',
         name: 'AGIR Objectif',
-        fullName: 'FCP AGIR Objectif (Fonds Actions BVMAC)',
-        sector: 'Fonds AGIR',
+        fullName: 'AGIR Objectif (Fonds Actions)',
+        sector: 'Produits AGIR',
         sectorKey: 'fcp-agir',
         price: 2000,
         change: 1.2,
@@ -559,6 +559,14 @@ function setupNavigation() {
         });
     }
 
+    // Header user profile avatar trigger
+    const headerProfile = document.getElementById('header-profile-trigger');
+    if (headerProfile) {
+        headerProfile.addEventListener('click', () => {
+            routeToTarget('profile');
+        });
+    }
+
     // Header notification bell trigger
     const notifBell = document.getElementById('header-notification-trigger');
     if (notifBell) {
@@ -567,11 +575,30 @@ function setupNavigation() {
         });
     }
 
-    // Special quick links
-    document.getElementById('go-to-market-link').addEventListener('click', (e) => {
-        e.preventDefault();
-        routeToTarget('market');
-    });
+    // Header security indicator trigger
+    const securityIndicator = document.querySelector('.security-status-indicator');
+    if (securityIndicator) {
+        securityIndicator.style.cursor = 'pointer';
+        securityIndicator.addEventListener('click', () => {
+            routeToTarget('security');
+        });
+    }
+
+    // Special quick links & dashboard cards redirect
+    const marketRedirectLink = document.getElementById('go-to-market-link');
+    if (marketRedirectLink) {
+        marketRedirectLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            routeToTarget('market');
+        });
+    }
+
+    const marketRedirectCard = document.getElementById('dashboard-market-redirect-card');
+    if (marketRedirectCard) {
+        marketRedirectCard.addEventListener('click', () => {
+            routeToTarget('market');
+        });
+    }
 }
 
 function checkAISubscriptionState() {
@@ -779,7 +806,7 @@ function renderDashboardCharts() {
     allocationChartInstance = new Chart(ctxDonut, {
         type: 'doughnut',
         data: {
-            labels: ['Actions BVMAC', 'Liquidités XAF', 'Plans PIP & FCP'],
+            labels: ['Actions', 'Liquidités XAF', 'Fonds Gérés'],
             datasets: [{
                 data: [stockValue, cashValue, savingsValue],
                 backgroundColor: ['#10b981', '#c5a028', '#fbbf24'], // Emerald, Gold, Warning
@@ -800,7 +827,7 @@ function renderDashboardCharts() {
         <div class="legend-item">
             <div class="legend-left">
                 <span class="legend-dot" style="background-color:#10b981;"></span>
-                <span class="legend-label">Actions BVMAC</span>
+                <span class="legend-label">Actions</span>
             </div>
             <span class="legend-val">${sharesStock}% (${(stockValue / 1000).toFixed(0)}k)</span>
         </div>
@@ -814,7 +841,7 @@ function renderDashboardCharts() {
         <div class="legend-item">
             <div class="legend-left">
                 <span class="legend-dot" style="background-color:#fbbf24;"></span>
-                <span class="legend-label">Plans PIP & FCP</span>
+                <span class="legend-label">Fonds Gérés</span>
             </div>
             <span class="legend-val">${sharesSavings}% (${(savingsValue / 1000).toFixed(0)}k)</span>
         </div>
@@ -1163,7 +1190,7 @@ function populateAICompanySelector() {
 
     // Load Actions
     const groupActions = document.createElement('optgroup');
-    groupActions.label = 'Actions BVMAC';
+    groupActions.label = 'Actions';
     BVMAC_STOCKS.forEach(stock => {
         const option = document.createElement('option');
         option.value = stock.ticker;
@@ -1174,11 +1201,11 @@ function populateAICompanySelector() {
 
     // Load FCP
     const groupFCP = document.createElement('optgroup');
-    groupFCP.label = 'Fonds Communs (FCP)';
+    groupFCP.label = 'Fonds Gérés';
     BVMAC_FCP.forEach(fcp => {
         const option = document.createElement('option');
         option.value = fcp.ticker;
-        option.innerText = `${fcp.name} (FCP - ${fcp.ratios.yield.value})`;
+        option.innerText = `${fcp.name} (Fonds Gérés - ${fcp.ratios.yield.value})`;
         groupFCP.appendChild(option);
     });
     select.appendChild(groupFCP);

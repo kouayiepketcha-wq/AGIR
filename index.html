@@ -16,77 +16,63 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
-    <!-- App Container -->
-    <div class="app-layout">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <div class="logo-icon">
-                    <span>A</span>
+    <!-- Phone Mockup Device (centered on desktop, full-screen on mobile) -->
+    <div class="phone-device">
+        <!-- App Container -->
+        <div class="app-layout">
+            
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <div class="sidebar-brand">
+                    <div class="logo-icon">
+                        <span>A</span>
+                    </div>
+                    <div class="brand-text">
+                        <h1>AGIR</h1>
+                    </div>
                 </div>
-                <div class="brand-text">
-                    <h1>AGIR</h1>
-                </div>
-            </div>
 
-            <div class="sidebar-user-card" id="trigger-profile-card">
-                <div class="user-avatar">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar">
-                    <div class="avatar-status-badge secure"></div>
+                <div class="sidebar-user-card" id="trigger-profile-card">
+                    <div class="user-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar">
+                        <div class="avatar-status-badge secure"></div>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">Saunya Compta</span>
+                        <span class="subscription-badge free" id="sub-badge-sidebar">Compte Standard</span>
+                    </div>
                 </div>
-                <div class="user-info">
-                    <span class="user-name">Saunya Compta</span>
-                    <span class="subscription-badge free" id="sub-badge-sidebar">Compte Standard</span>
-                </div>
-            </div>
 
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-target="dashboard">
-                    <i data-lucide="layout-dashboard"></i>
-                    <span>Tableau de Bord</span>
-                </a>
-                <a href="#" class="nav-item" data-target="market">
-                    <i data-lucide="trending-up"></i>
-                    <span>Marché BVMAC</span>
-                </a>
-                <a href="#" class="nav-item pro-feature" data-target="ai-analyst">
-                    <i data-lucide="cpu"></i>
-                    <span>Outil IA AGIR</span>
-                    <span class="pro-tag"><i data-lucide="lock" class="pro-lock-icon"></i>PRO</span>
-                </a>
-                <a href="#" class="nav-item" data-target="savings">
-                    <i data-lucide="repeat"></i>
-                    <span>Plans PIP & FCP</span>
-                </a>
-                <a href="#" class="nav-item" data-target="notifications">
-                    <i data-lucide="bell"></i>
-                    <span>Notifications</span>
-                </a>
-                <a href="#" class="nav-item" data-target="profile">
-                    <i data-lucide="user"></i>
-                    <span>Mon Profil</span>
-                </a>
-                <a href="#" class="nav-item" data-target="security">
-                    <i data-lucide="shield-check"></i>
-                    <span>Sécurité Shield</span>
-                </a>
-            </nav>
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-item active" data-target="dashboard">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Tableau de Bord</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="market">
+                        <i data-lucide="trending-up"></i>
+                        <span>Marché Financier</span>
+                    </a>
+                    <a href="#" class="nav-item pro-feature" data-target="ai-analyst">
+                        <i data-lucide="cpu"></i>
+                        <span>Outil IA AGIR</span>
+                        <span class="pro-tag"><i data-lucide="lock" class="pro-lock-icon"></i>PRO</span>
+                    </a>
+                </nav>
 
-            <div class="sidebar-footer">
-                <div class="sidebar-balance-widget">
-                    <span class="widget-title">Liquidités XAF</span>
-                    <div class="widget-value" id="sidebar-balance">1 250 000 FCFA</div>
-                    <button class="btn btn-sm btn-outline-primary btn-block btn-deposit-trigger">
-                        <i data-lucide="plus-circle"></i> Déposer
-                    </button>
+                <div class="sidebar-footer">
+                    <div class="sidebar-balance-widget">
+                        <span class="widget-title">Liquidités XAF</span>
+                        <div class="widget-value" id="sidebar-balance">1 250 000 FCFA</div>
+                        <button class="btn btn-sm btn-outline-primary btn-block btn-deposit-trigger">
+                            <i data-lucide="plus-circle"></i> Déposer
+                        </button>
+                    </div>
+                    <div class="security-stamp">
+                        <i data-lucide="lock"></i>
+                        <span>Secured AES-256</span>
+                    </div>
                 </div>
-                <div class="security-stamp">
-                    <i data-lucide="lock"></i>
-                    <span>Secured AES-256</span>
-                </div>
-            </div>
-        </aside>
+            </aside>
 
         <!-- Main Workspace Area -->
         <main class="main-workspace">
@@ -110,13 +96,8 @@
                         <span class="notification-badge" id="notif-count-badge">3</span>
                     </div>
 
-                    <div class="quick-action-buttons">
-                        <button class="btn btn-primary btn-deposit-trigger">
-                            <i data-lucide="download"></i> <span>Déposer</span>
-                        </button>
-                        <button class="btn btn-secondary btn-withdraw-trigger">
-                            <i data-lucide="upload"></i> <span>Retirer</span>
-                        </button>
+                    <div class="header-user-avatar" id="header-profile-trigger">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar">
                     </div>
                 </div>
             </header>
@@ -136,51 +117,47 @@
 
                     <!-- Hero Stats Grid -->
                     <div class="stats-grid">
-                        <div class="stat-card glass-card">
+                        <div class="stat-card glass-card col-span-2 total-assets-card">
                             <div class="stat-header">
-                                <span>Valeur du Portefeuille</span>
-                                <div class="stat-icon-wrapper portfolio"><i data-lucide="briefcase"></i></div>
+                                <span>Total des Actifs</span>
+                                <div class="stat-icon-wrapper portfolio"><i data-lucide="wallet"></i></div>
                             </div>
                             <div class="stat-value" id="portfolio-value">4 850 000 FCFA</div>
                             <div class="stat-change positive">
                                 <i data-lucide="arrow-up-right"></i>
                                 <span>+12.4% ce mois</span>
                             </div>
-                        </div>
-
-                        <div class="stat-card glass-card">
-                            <div class="stat-header">
-                                <span>Total Liquidités</span>
-                                <div class="stat-icon-wrapper cash"><i data-lucide="wallet"></i></div>
-                            </div>
-                            <div class="stat-value" id="cash-value">1 250 000 FCFA</div>
-                            <div class="stat-change neutral">
-                                <i data-lucide="refresh-cw"></i>
-                                <span>Disponibilité instantanée</span>
+                            <div class="card-action-buttons">
+                                <button class="btn btn-primary btn-deposit-trigger">
+                                    <i data-lucide="download"></i> <span>Déposer</span>
+                                </button>
+                                <button class="btn btn-secondary btn-withdraw-trigger">
+                                    <i data-lucide="upload"></i> <span>Retirer</span>
+                                </button>
                             </div>
                         </div>
 
-                        <div class="stat-card glass-card">
+                        <div class="stat-card glass-card" id="dashboard-market-redirect-card" style="cursor:pointer;">
                             <div class="stat-header">
-                                <span>Investissements BVMAC</span>
-                                <div class="stat-icon-wrapper market-stat"><i data-lucide="trending-up"></i></div>
+                                <span>Portefeuille Investi</span>
+                                <div class="stat-icon-wrapper portfolio"><i data-lucide="briefcase"></i></div>
                             </div>
                             <div class="stat-value" id="dashboard-invested-value">3 600 000 FCFA</div>
                             <div class="stat-change positive">
                                 <i data-lucide="arrow-up-right"></i>
-                                <span>+8.2% de dividendes</span>
+                                <span>Actions & Fonds</span>
                             </div>
                         </div>
 
                         <div class="stat-card glass-card">
                             <div class="stat-header">
-                                <span>Plans Automatiques (PIP)</span>
-                                <div class="stat-icon-wrapper savings-stat"><i data-lucide="repeat"></i></div>
+                                <span>Liquidités XAF</span>
+                                <div class="stat-icon-wrapper cash"><i data-lucide="dollar-sign"></i></div>
                             </div>
-                            <div class="stat-value" id="total-savings-value">850 000 FCFA</div>
-                            <div class="stat-change positive">
-                                <i data-lucide="percent"></i>
-                                <span>Taux moyen 6.8% A.N.</span>
+                            <div class="stat-value" id="cash-value">1 250 000 FCFA</div>
+                            <div class="stat-change neutral">
+                                <i data-lucide="refresh-cw"></i>
+                                <span>Disponible immédiatement</span>
                             </div>
                         </div>
                     </div>
@@ -252,16 +229,16 @@
                     </div>
                 </section>
 
-                <!-- 2. Marché BVMAC View -->
+                <!-- 2. Marché Financier View -->
                 <section id="view-market" class="view-pane">
                     <div class="welcome-header">
                         <div class="welcome-text">
-                            <h2>Bourse d'Afrique Centrale (BVMAC)</h2>
-                            <p>Suivez les cours en direct et achetez/vendez des actions, des obligations d'État et des fonds communs (FCP).</p>
+                            <h2>Marché Financier</h2>
+                            <p>Suivez les cours en direct et négociez des actions, des obligations d'État et des fonds gérés.</p>
                         </div>
                     </div>
 
-                    <!-- Category Tab Bar (Actions / Obligations / FCP) -->
+                    <!-- Category Tab Bar (Actions / Obligations / Fonds Gérés) -->
                     <div class="market-category-bar">
                         <button class="category-tab-btn active" data-category="actions">
                             <i data-lucide="trending-up"></i> Actions
@@ -270,7 +247,7 @@
                             <i data-lucide="scroll"></i> Obligations d'État
                         </button>
                         <button class="category-tab-btn" data-category="fcp">
-                            <i data-lucide="layers"></i> Fonds Communs (FCP)
+                            <i data-lucide="layers"></i> Fonds Gérés
                         </button>
                     </div>
 
@@ -803,19 +780,12 @@
             <i data-lucide="trending-up"></i>
             <span>Marché</span>
         </a>
-        <a href="#" class="mobile-nav-item" data-target="savings">
-            <i data-lucide="repeat"></i>
-            <span>Plans PIP</span>
-        </a>
         <a href="#" class="mobile-nav-item" data-target="ai-analyst">
             <i data-lucide="cpu"></i>
-            <span>IA</span>
-        </a>
-        <a href="#" class="mobile-nav-item" data-target="profile">
-            <i data-lucide="user"></i>
-            <span>Profil</span>
+            <span>Analyse IA</span>
         </a>
     </div>
+    </div> <!-- Closing phone-device -->
 
     <!-- MODAL 1: DEPOSIT / WITHDRAW MODAL -->
     <div class="modal-backdrop" id="cash-modal">
