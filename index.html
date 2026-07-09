@@ -822,15 +822,31 @@
 
                 <!-- Payment Method (Dynamic based on selected currency) -->
                 <div class="form-group" id="cash-modal-gateway-section">
-                    <label>Mode de paiement</label>
-                    <div class="payment-methods-grid" id="deposit-payment-grid">
+                    <label>Opérateurs de paiement mobile</label>
+                    <div class="payment-methods-grid" id="deposit-payment-grid" style="grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important;">
                         <div class="payment-method-card active" data-method="momo">
                             <div class="method-icon momo-logo"></div>
-                            <span>MTN MoMo</span>
+                            <span style="font-size: 10px; font-weight: bold; margin-top: 4px;">MTN MoMo</span>
                         </div>
                         <div class="payment-method-card" data-method="om">
                             <div class="method-icon om-logo"></div>
-                            <span>Orange Money</span>
+                            <span style="font-size: 10px; font-weight: bold; margin-top: 4px;">Orange Money</span>
+                        </div>
+                        <div class="payment-method-card" data-method="airtel">
+                            <div class="method-icon" style="color: #ef4444; font-size: 18px; display: flex; align-items: center; justify-content: center;"><i data-lucide="smartphone"></i></div>
+                            <span style="font-size: 10px; font-weight: bold; margin-top: 4px;">Airtel Money</span>
+                        </div>
+                        <div class="payment-method-card" data-method="moov">
+                            <div class="method-icon" style="color: #3b82f6; font-size: 18px; display: flex; align-items: center; justify-content: center;"><i data-lucide="smartphone"></i></div>
+                            <span style="font-size: 10px; font-weight: bold; margin-top: 4px;">Moov Money</span>
+                        </div>
+                        <div class="payment-method-card" data-method="wave">
+                            <div class="method-icon" style="color: #06b6d4; font-size: 18px; display: flex; align-items: center; justify-content: center;"><i data-lucide="smartphone"></i></div>
+                            <span style="font-size: 10px; font-weight: bold; margin-top: 4px;">Wave</span>
+                        </div>
+                        <div class="payment-method-card" data-method="eu">
+                            <div class="method-icon" style="color: #10b981; font-size: 18px; display: flex; align-items: center; justify-content: center;"><i data-lucide="smartphone"></i></div>
+                            <span style="font-size: 10px; font-weight: bold; margin-top: 4px;">Express Union</span>
                         </div>
                     </div>
                 </div>
@@ -1073,6 +1089,26 @@
                 <button class="btn btn-primary" id="btn-download-document-action">
                     <i data-lucide="download"></i> Télécharger le PDF complet
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mock Native USSD Push SIM Dialog -->
+    <div class="modal-backdrop" id="ussd-push-dialog" style="display: none; align-items: center; justify-content: center; z-index: 15000; background: rgba(0, 0, 0, 0.8);">
+        <div class="ussd-push-box" style="background: #1c2434; border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 20px; width: 320px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 15px rgba(212, 175, 55, 0.15); text-align: center; color: #fff;">
+            <div class="ussd-header" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px;">
+                <span class="ussd-operator-badge" id="ussd-operator-name" style="font-size: 11px; font-weight: bold; background: var(--primary); color: var(--bg-main); padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px;">MTN MOMO</span>
+            </div>
+            <p class="ussd-message" id="ussd-push-message" style="font-size: 14px; color: #e2e8f0; line-height: 1.5; margin-bottom: 20px;">
+                Autoriser le débit de 10 000 FCFA initié par AGIR FinTech ?
+            </p>
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">ENTREZ VOTRE PIN OPÉRATEUR MOBILE</label>
+                <input type="password" id="ussd-pin-input" style="width: 140px; background: rgba(0, 0, 0, 0.4); border: 1.5px solid var(--primary); border-radius: 10px; padding: 10px; text-align: center; font-size: 20px; letter-spacing: 4px; color: #fff; font-weight: bold; outline: none;" maxlength="6" placeholder="••••" autocomplete="off">
+            </div>
+            <div class="ussd-buttons" style="display: flex; gap: 12px;">
+                <button id="btn-ussd-cancel" style="flex: 1; padding: 12px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s;">Annuler</button>
+                <button id="btn-ussd-confirm" style="flex: 1; padding: 12px; background: var(--primary); color: var(--bg-main); font-weight: bold; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; transition: 0.2s;">Valider</button>
             </div>
         </div>
     </div>

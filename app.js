@@ -1786,6 +1786,7 @@ function setupCashModal() {
     const cardField = document.getElementById('card-form-field');
     const amountInput = document.getElementById('cash-modal-amount');
     const pinField = document.getElementById('cash-modal-pin');
+    const gatewaySection = document.getElementById('cash-modal-gateway-section');
 
     function updateFXDepositMetrics() {
         if (!currencySelect || !amountInput) return;
@@ -1802,6 +1803,7 @@ function setupCashModal() {
             if (conversionBox) conversionBox.style.display = 'none';
             if (phoneField) phoneField.style.display = 'block';
             if (cardField) cardField.style.display = 'none';
+            if (gatewaySection) gatewaySection.style.display = 'block';
             if (amountLabel) amountLabel.innerText = "Montant (XAF)";
             if (amountSuffix) amountSuffix.innerText = "FCFA";
         } else {
@@ -1812,6 +1814,7 @@ function setupCashModal() {
             if (conversionBox) conversionBox.style.display = 'block';
             if (phoneField) phoneField.style.display = 'none';
             if (cardField) cardField.style.display = 'block';
+            if (gatewaySection) gatewaySection.style.display = 'none';
             if (amountLabel) amountLabel.innerText = `Montant (${currency})`;
             if (amountSuffix) amountSuffix.innerText = currency;
 
@@ -1831,6 +1834,54 @@ function setupCashModal() {
     }
     if (amountInput) {
         amountInput.addEventListener('input', updateFXDepositMetrics);
+    }
+
+    // USSD SIM Push Dialog controllers
+    const ussdDialog = document.getElementById('ussd-push-dialog');
+    const btnUssdCancel = document.getElementById('btn-ussd-cancel');
+    const btnUssdConfirm = document.getElementById('btn-ussd-confirm');
+    const ussdPinInput = document.getElementById('ussd-pin-input');
+    let pendingDepositData = null;
+
+    if (btnUssdCancel) {
+        btnUssdCancel.addEventListener('click', () => {
+            if (ussdDialog) ussdDialog.style.display = 'none';
+            pendingDepositData = null;
+        });
+    }
+
+    if (btnUssdConfirm) {
+        btnUssdConfirm.addEventListener('click', () => {
+            const ussdPin = ussdPinInput ? ussdPinInput.value : '';
+            if (!ussdPin || ussdPin.length < 4) {
+                alert("Erreur: Veuillez saisir votre code PIN opérateur (4 à 6 chiffres).");
+                return;
+            }
+
+            if (ussdDialog) ussdDialog.style.display = 'none';
+
+            if (pendingDepositData) {
+                const { amountXaf, amountLocal, currency, gateway } = pendingDepositData;
+                appState.cashBalance += amountXaf;
+                appState.transactions.unshift({
+                    type: 'deposit',
+                    method: gateway,
+                    date: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                    amount: amountXaf
+                });
+
+                logSecurityEvent(`Dépôt de ${amountLocal} ${currency} (${formatXAF(amountXaf)} net) validé via USSD Push [PIN vérifié]`, "Success");
+                triggerNotification('trade-alert', 'Dépôt validé', `Votre recharge de ${amountLocal} ${currency} a été créditée en ${formatXAF(amountXaf)} via ${gateway}.`);
+                alert(`Recharge Mobile Money réussie !\nVotre compte a été crédité de ${formatXAF(amountXaf)}.`);
+
+                updateUIBalances();
+                renderRecentTransactions();
+                renderDashboardCharts();
+
+                pendingDepositData = null;
+                closeModal('cash-modal');
+            }
+        });
     }
 
     const submitBtn = document.getElementById('btn-submit-cash-action');
@@ -1856,22 +1907,53 @@ function setupCashModal() {
         const netCreditedXaf = amountXaf - feesXaf;
 
         // Route Payment Gateway description
-        let gateway = 'GIMAC / CinetPay';
+        const activeMethodCard = document.querySelector('.payment-method-card.active');
+        const method = activeMethodCard ? activeMethodCard.getAttribute('data-method') : 'momo';
+        const methodLabels = {
+            'momo': 'MTN MoMo',
+            'om': 'Orange Money',
+            'airtel': 'Airtel Money',
+            'moov': 'Moov Money',
+            'wave': 'Wave',
+            'eu': 'Express Union'
+        };
+        
+        let gateway = methodLabels[method] || 'MTN MoMo';
         if (currency !== 'XAF') {
             gateway = (currency === 'USD' || currency === 'EUR') ? 'Stripe Gateway' : 'Flutterwave Hub';
         }
 
         if (activeCashType === 'deposit') {
-            appState.cashBalance += netCreditedXaf;
-            appState.transactions.unshift({
-                type: 'deposit',
-                method: gateway,
-                date: new Date().toISOString().slice(0, 16).replace('T', ' '),
-                amount: netCreditedXaf
-            });
-            logSecurityEvent(`Dépôt de ${amountLocal} ${currency} (${formatXAF(netCreditedXaf)} net) via ${gateway}`, "Success");
-            triggerNotification('trade-alert', 'Dépôt validé', `Votre recharge de ${amountLocal} ${currency} a été créditée en ${formatXAF(netCreditedXaf)} via ${gateway}.`);
-            alert(`Dépôt réussi !\nVotre solde a été crédité de ${formatXAF(netCreditedXaf)}.`);
+            if (currency === 'XAF') {
+                // Initiates dynamic USSD Push dialogue simulation
+                const phone = document.getElementById('cash-modal-phone').value || '677890123';
+                pendingDepositData = {
+                    amountXaf: netCreditedXaf,
+                    amountLocal: amountLocal,
+                    currency: currency,
+                    gateway: gateway
+                };
+
+                if (ussdDialog) {
+                    document.getElementById('ussd-operator-name').innerText = gateway;
+                    document.getElementById('ussd-push-message').innerText = `Autoriser le débit de ${formatXAF(amountLocal)} initié par AGIR FinTech vers le numéro ${phone} ?`;
+                    if (ussdPinInput) ussdPinInput.value = '';
+                    ussdDialog.style.display = 'flex';
+                }
+                return; // Early return, wait for operator USSD PIN verification!
+            } else {
+                // Card / Stripe deposits execute directly
+                appState.cashBalance += netCreditedXaf;
+                appState.transactions.unshift({
+                    type: 'deposit',
+                    method: gateway,
+                    date: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                    amount: netCreditedXaf
+                });
+                logSecurityEvent(`Dépôt de ${amountLocal} ${currency} (${formatXAF(netCreditedXaf)} net) via ${gateway}`, "Success");
+                triggerNotification('trade-alert', 'Dépôt validé', `Votre recharge de ${amountLocal} ${currency} a été créditée en ${formatXAF(netCreditedXaf)} via ${gateway}.`);
+                alert(`Dépôt réussi !\nVotre solde a été crédité de ${formatXAF(netCreditedXaf)}.`);
+            }
         } else {
             if (appState.cashBalance < amountXaf) {
                 alert("Solde insuffisant.");
