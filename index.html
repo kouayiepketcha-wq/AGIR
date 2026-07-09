@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGIR - Révolution Financière en Afrique Centrale</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- App Container -->
+    <div class="app-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon">
+                    <span>A</span>
+                </div>
+                <div class="brand-text">
+                    <h1>AGIR</h1>
+                </div>
+            </div>
+
+            <div class="sidebar-user-card" id="trigger-profile-card">
+                <div class="user-avatar">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar">
+                    <div class="avatar-status-badge secure"></div>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Saunya Compta</span>
+                    <span class="subscription-badge free" id="sub-badge-sidebar">Compte Standard</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-target="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Tableau de Bord</span>
+                </a>
+                <a href="#" class="nav-item" data-target="market">
+                    <i data-lucide="trending-up"></i>
+                    <span>Marché BVMAC</span>
+                </a>
+                <a href="#" class="nav-item pro-feature" data-target="ai-analyst">
+                    <i data-lucide="cpu"></i>
+                    <span>Outil IA AGIR</span>
+                    <span class="pro-tag"><i data-lucide="lock" class="pro-lock-icon"></i>PRO</span>
+                </a>
+                <a href="#" class="nav-item" data-target="savings">
+                    <i data-lucide="repeat"></i>
+                    <span>Plans PIP & FCP</span>
+                </a>
+                <a href="#" class="nav-item" data-target="notifications">
+                    <i data-lucide="bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="#" class="nav-item" data-target="profile">
+                    <i data-lucide="user"></i>
+                    <span>Mon Profil</span>
+                </a>
+                <a href="#" class="nav-item" data-target="security">
+                    <i data-lucide="shield-check"></i>
+                    <span>Sécurité Shield</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-balance-widget">
+                    <span class="widget-title">Liquidités XAF</span>
+                    <div class="widget-value" id="sidebar-balance">1 250 000 FCFA</div>
+                    <button class="btn btn-sm btn-outline-primary btn-block btn-deposit-trigger">
+                        <i data-lucide="plus-circle"></i> Déposer
+                    </button>
+                </div>
+                <div class="security-stamp">
+                    <i data-lucide="lock"></i>
+                    <span>Secured AES-256</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="main-workspace">
+            
+            <!-- Global Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="search-bar">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Rechercher actions, obligations, FCP...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="security-status-indicator secure">
+                        <i data-lucide="shield"></i>
+                        <span class="desktop-only">AGIR Shield Actif</span>
+                    </div>
+
+                    <div class="notification-bell" id="header-notification-trigger">
+                        <i data-lucide="bell"></i>
+                        <span class="notification-badge" id="notif-count-badge">3</span>
+                    </div>
+
+                    <div class="quick-action-buttons">
+                        <button class="btn btn-primary btn-deposit-trigger">
+                            <i data-lucide="download"></i> <span>Déposer</span>
+                        </button>
+                        <button class="btn btn-secondary btn-withdraw-trigger">
+                            <i data-lucide="upload"></i> <span>Retirer</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content Container (Views) -->
+            <div class="view-viewport">
+
+                <!-- 1. Tableau de Bord View -->
+                <section id="view-dashboard" class="view-pane active">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Bonjour, Saunya</h2>
+                            <p>Voici la situation de votre portefeuille pour l'Afrique Centrale.</p>
+                        </div>
+                        <div class="current-date" id="live-date">8 Juillet 2026</div>
+                    </div>
+
+                    <!-- Hero Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card glass-card">
+                            <div class="stat-header">
+                                <span>Valeur du Portefeuille</span>
+                                <div class="stat-icon-wrapper portfolio"><i data-lucide="briefcase"></i></div>
+                            </div>
+                            <div class="stat-value" id="portfolio-value">4 850 000 FCFA</div>
+                            <div class="stat-change positive">
+                                <i data-lucide="arrow-up-right"></i>
+                                <span>+12.4% ce mois</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card glass-card">
+                            <div class="stat-header">
+                                <span>Total Liquidités</span>
+                                <div class="stat-icon-wrapper cash"><i data-lucide="wallet"></i></div>
+                            </div>
+                            <div class="stat-value" id="cash-value">1 250 000 FCFA</div>
+                            <div class="stat-change neutral">
+                                <i data-lucide="refresh-cw"></i>
+                                <span>Disponibilité instantanée</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card glass-card">
+                            <div class="stat-header">
+                                <span>Investissements BVMAC</span>
+                                <div class="stat-icon-wrapper market-stat"><i data-lucide="trending-up"></i></div>
+                            </div>
+                            <div class="stat-value" id="dashboard-invested-value">3 600 000 FCFA</div>
+                            <div class="stat-change positive">
+                                <i data-lucide="arrow-up-right"></i>
+                                <span>+8.2% de dividendes</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card glass-card">
+                            <div class="stat-header">
+                                <span>Plans Automatiques (PIP)</span>
+                                <div class="stat-icon-wrapper savings-stat"><i data-lucide="repeat"></i></div>
+                            </div>
+                            <div class="stat-value" id="total-savings-value">850 000 FCFA</div>
+                            <div class="stat-change positive">
+                                <i data-lucide="percent"></i>
+                                <span>Taux moyen 6.8% A.N.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Dashboard Section (Charts + Table) -->
+                    <div class="dashboard-grid">
+                        <!-- Portofolio Chart -->
+                        <div class="grid-item glass-card col-span-2">
+                            <div class="card-title-bar">
+                                <h3>Évolution de vos Actifs</h3>
+                                <div class="chart-filters">
+                                    <button class="btn-filter active" data-period="1M">1M</button>
+                                    <button class="btn-filter" data-period="6M">6M</button>
+                                    <button class="btn-filter" data-period="1A">1A</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="portfolioChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Asset Allocation -->
+                        <div class="grid-item glass-card">
+                            <div class="card-title-bar">
+                                <h3>Allocation des fonds</h3>
+                            </div>
+                            <div class="chart-container-donut">
+                                <canvas id="allocationChart"></canvas>
+                            </div>
+                            <div class="allocation-legend" id="allocation-legend-list">
+                                <!-- Generated Dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Top Stocks Market Overview -->
+                        <div class="grid-item glass-card col-span-2">
+                            <div class="card-title-bar">
+                                <h3>Tendances du Marché BVMAC</h3>
+                                <a href="#" class="see-all-link" id="go-to-market-link">Voir tous les titres</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Symbole</th>
+                                            <th>Nom de l'Entreprise</th>
+                                            <th>Secteur / Type</th>
+                                            <th>Dernier Cours (FCFA)</th>
+                                            <th>Variation</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboard-market-table">
+                                        <!-- Dynamically loaded -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Recent Transactions -->
+                        <div class="grid-item glass-card">
+                            <div class="card-title-bar">
+                                <h3>Activités Récentes</h3>
+                            </div>
+                            <div class="transaction-list" id="dashboard-transactions-list">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Marché BVMAC View -->
+                <section id="view-market" class="view-pane">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Bourse d'Afrique Centrale (BVMAC)</h2>
+                            <p>Suivez les cours en direct et achetez/vendez des actions, des obligations d'État et des fonds communs (FCP).</p>
+                        </div>
+                    </div>
+
+                    <!-- Category Tab Bar (Actions / Obligations / FCP) -->
+                    <div class="market-category-bar">
+                        <button class="category-tab-btn active" data-category="actions">
+                            <i data-lucide="trending-up"></i> Actions
+                        </button>
+                        <button class="category-tab-btn" data-category="obligations">
+                            <i data-lucide="scroll"></i> Obligations d'État
+                        </button>
+                        <button class="category-tab-btn" data-category="fcp">
+                            <i data-lucide="layers"></i> Fonds Communs (FCP)
+                        </button>
+                    </div>
+
+                    <!-- Filter panel -->
+                    <div class="market-toolbar glass-card">
+                        <div class="market-filters" id="market-sector-filters-container">
+                            <button class="btn-market-filter active" data-sector="all">Toutes</button>
+                            <button class="btn-market-filter" data-sector="agro">Agro-industrie</button>
+                            <button class="btn-market-filter" data-sector="finance">Banques & Finance</button>
+                            <button class="btn-market-filter" data-sector="utility">Services Publics</button>
+                        </div>
+                        <div class="market-search">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="market-search-input" placeholder="Rechercher par nom...">
+                        </div>
+                    </div>
+
+                    <div class="market-layout-grid">
+                        <!-- Listed elements list -->
+                        <div class="market-stocks-list" id="market-stocks-container">
+                            <!-- Loaded dynamically -->
+                        </div>
+
+                        <!-- Asset Detail panel -->
+                        <div class="market-stock-detail-pane glass-card" id="stock-detail-panel">
+                            <!-- Populated on selection -->
+                            <div class="detail-empty-state">
+                                <i data-lucide="mouse-pointer-click"></i>
+                                <h4>Sélectionnez une valeur</h4>
+                                <p>Cliquez sur l'une des valeurs listées à gauche pour afficher son graphique détaillé, les documents officiels et passer un ordre.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Outil IA AGIR View (Subscription Locked) -->
+                <section id="view-ai-analyst" class="view-pane">
+                    
+                    <!-- Locked state overlay -->
+                    <div class="paywall-overlay" id="ai-paywall">
+                        <div class="paywall-content-wrapper">
+                            <div class="paywall-shield-box">
+                                <div class="lock-circle">
+                                    <i data-lucide="lock" class="padlock-animation"></i>
+                                </div>
+                                <div class="pulse-ring"></div>
+                            </div>
+                            
+                            <h2>Débloquez l'Outil d'Analyse IA d'AGIR</h2>
+                            <p class="paywall-subtitle">Optimisez vos rendements sur la BVMAC grâce à l'analyse financière prédictive et automatisée.</p>
+                            
+                            <div class="features-comparison">
+                                <div class="comparison-column">
+                                    <h4>Compte Gratuit</h4>
+                                    <ul>
+                                        <li><i data-lucide="check" class="check-green"></i> Cours en direct de la BVMAC</li>
+                                        <li><i data-lucide="check" class="check-green"></i> Portefeuille et Épargne</li>
+                                        <li><i data-lucide="x" class="x-red"></i> Pas d'analyse des Ratios Financiers</li>
+                                        <li><i data-lucide="x" class="x-red"></i> Pas de recommandation d'Achat/Vente IA</li>
+                                        <li><i data-lucide="x" class="x-red"></i> Pas de projections sur 5 ans</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="comparison-column active">
+                                    <div class="best-value-tag">Recommandé</div>
+                                    <h4>AGIR Pro AI</h4>
+                                    <ul>
+                                        <li><i data-lucide="check" class="check-green"></i> Toutes les fonctionnalités de base</li>
+                                        <li><i data-lucide="check" class="check-green"></i> Ratios Clés Automatisés (P/E, ROE, Yield)</li>
+                                        <li><i data-lucide="check" class="check-green"></i> Recommandation IA d'investissement</li>
+                                        <li><i data-lucide="check" class="check-green"></i> Analyse des Bilans Comptables</li>
+                                        <li><i data-lucide="check" class="check-green"></i> Projections et Tendances futures</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="pricing-card">
+                                <div class="pricing-header">
+                                    <span class="price-value">15 000 FCFA</span>
+                                    <span class="price-period">/ mois</span>
+                                </div>
+                                <p class="pricing-meta">Sans engagement - Annulable à tout moment</p>
+                                <button class="btn btn-primary btn-lg btn-block btn-subscribe-now">
+                                    <i data-lucide="sparkles"></i> S'abonner avec Mobile Money / Carte
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Unlocked state layout -->
+                    <div class="ai-unlocked-layout" id="ai-main-content" style="display: none;">
+                        <div class="welcome-header">
+                            <div class="welcome-text">
+                                <div class="pro-badge-title">
+                                    <h2>Outil d'Analyse IA</h2>
+                                    <span class="badge-pro">AGIR PRO AI</span>
+                                </div>
+                                <p>Analyse automatique, ratios clés et recommandations prédictives basées sur les rapports financiers officiels de la BVMAC.</p>
+                            </div>
+                            <div class="ai-status-indicator">
+                                <div class="pulse-green-dot"></div>
+                                <span>IA Synchrone BVMAC 2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Selector of company -->
+                        <div class="ai-selectors glass-card">
+                            <label for="ai-company-select"><i data-lucide="filter"></i> Analyser l'actif :</label>
+                            <select id="ai-company-select" class="custom-select">
+                                <!-- Options will be generated from stock lists -->
+                            </select>
+                        </div>
+
+                        <div class="ai-analysis-grid">
+                            <!-- Recommendation Card -->
+                            <div class="grid-item glass-card col-span-2 ai-recommendation-card">
+                                <div class="ai-header-card">
+                                    <h3>Diagnostic & Conseil IA</h3>
+                                    <span class="ai-timestamp"><i data-lucide="refresh-cw"></i> Réévalué il y a 2h</span>
+                                </div>
+                                
+                                <div class="ai-rec-display">
+                                    <div class="rec-badge" id="ai-rec-badge">ACHETER</div>
+                                    <div class="rec-score-wrapper">
+                                        <span class="rec-score-label">Indice de Confiance IA :</span>
+                                        <div class="rec-score-bar-bg">
+                                            <div class="rec-score-bar-fill" id="ai-confidence-bar" style="width: 85%;"></div>
+                                        </div>
+                                        <span class="rec-score-val" id="ai-confidence-value">85%</span>
+                                    </div>
+                                </div>
+
+                                <div class="ai-narrative">
+                                    <h4>Rapport d'analyse synthétique :</h4>
+                                    <p id="ai-narrative-text">Chargement de l'analyse...</p>
+                                </div>
+                                
+                                <div class="ai-bullet-points">
+                                    <div class="bullet-box positive">
+                                        <h5>Points Forts (Forces)</h5>
+                                        <ul id="ai-strengths-list">
+                                            <!-- Dynamically injected -->
+                                        </ul>
+                                    </div>
+                                    <div class="bullet-box negative">
+                                        <h5>Points de Vigilance (Risques)</h5>
+                                        <ul id="ai-risks-list">
+                                            <!-- Dynamically injected -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Financial Ratios Card -->
+                            <div class="grid-item glass-card">
+                                <div class="card-title-bar">
+                                    <h3>Ratios / Paramètres Calculés</h3>
+                                </div>
+                                <div class="ratios-list" id="ai-ratios-list">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Projection chart -->
+                            <div class="grid-item glass-card col-span-3">
+                                <div class="card-title-bar">
+                                    <h3>Projection de Croissance du Cours (2026 - 2030)</h3>
+                                    <span class="chart-note">Modèle prédictif hybride ARIMA + IA Financière</span>
+                                </div>
+                                <div class="chart-container-large">
+                                    <canvas id="aiProjectionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Plans PIP & FCP View -->
+                <section id="view-savings" class="view-pane">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Plans d'Investissement Programmé (PIP)</h2>
+                            <p>Automatisez l'achat périodique de FCP ou d'obligations d'État pour dynamiser vos rendements et financer vos projets.</p>
+                        </div>
+                    </div>
+
+                    <!-- Savings Dashboard -->
+                    <div class="savings-dashboard-grid">
+                        
+                        <!-- AutoSave Config -->
+                        <div class="grid-item glass-card col-span-2">
+                            <div class="card-title-bar">
+                                <h3><i data-lucide="repeat"></i> Configuration de votre PIP Automatique</h3>
+                                <label class="switch">
+                                    <input type="checkbox" id="autosave-toggle" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <p class="section-desc">Augmentez votre portefeuille passivement. Définissez un montant à prélever périodiquement sur votre Mobile Money pour l'investir directement dans le FCP ou l'obligation de votre choix, injectant de la liquidité constante sur le marché.</p>
+                            
+                            <div class="autosave-settings-form">
+                                <div class="form-group">
+                                    <label>Fréquence</label>
+                                    <div class="segmented-control">
+                                        <button class="segment-btn active" data-freq="daily">Tous les jours</button>
+                                        <button class="segment-btn" data-freq="weekly">Toutes les semaines</button>
+                                        <button class="segment-btn" data-freq="monthly">Tous les mois</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Montant récurrent</label>
+                                    <div class="input-with-suffix">
+                                        <input type="number" id="autosave-amount" value="5000">
+                                        <span class="suffix">FCFA</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Actif Cible</label>
+                                    <select class="custom-select" id="autosave-target-asset">
+                                        <option value="AGFL">AGIR Flex (FCP Liquide - 5.8%)</option>
+                                        <option value="AGOB">AGIR Objectif (FCP Retraite - 8.5%)</option>
+                                        <option value="ECMR">Cameroun ECMR 6.25% (Obligation)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="autosave-settings-form margin-top-md" style="grid-template-columns: 1fr 1fr; margin-bottom: 24px;">
+                                <div class="form-group">
+                                    <label>Opérateur Télécom à débiter</label>
+                                    <select class="custom-select" id="autosave-source">
+                                        <option value="momo">MTN Mobile Money (+237 67X XXX XXX)</option>
+                                        <option value="om">Orange Money (+237 65X XXX XXX)</option>
+                                        <option value="balance">Solde Cash AGIR</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Code PIN de validation automatique</label>
+                                    <input type="password" class="custom-input" id="autosave-pin" placeholder="••••" maxlength="4" value="1234">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn btn-primary" id="btn-save-autosave-settings">Activer le plan d'investissement</button>
+                            </div>
+                        </div>
+
+                        <!-- Performance widget -->
+                        <div class="grid-item glass-card">
+                            <div class="card-title-bar">
+                                <h3>Croissance Cumulée</h3>
+                            </div>
+                            <div class="savings-interest-card">
+                                <span class="interest-rate">6.8% <span class="rate-note">A.N. moyen</span></span>
+                                <p>Rendement net pondéré de vos investissements récurrents (FCP et Obligations souveraines).</p>
+                                <div class="interest-progress">
+                                    <div class="progress-bar-bg">
+                                        <div class="progress-bar-fill" style="width: 70%;"></div>
+                                    </div>
+                                    <span class="progress-label">Objectif Projet : 70% atteint (700 000 FCFA / 1 000 000 FCFA)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Vaults list -->
+                        <div class="grid-item glass-card col-span-3">
+                            <div class="card-title-bar">
+                                <h3>Vos Plans & Portefeuilles Programmés Actifs</h3>
+                                <button class="btn btn-secondary btn-sm" id="btn-create-vault">
+                                    <i data-lucide="plus-circle"></i> Créer un nouveau plan
+                                </button>
+                            </div>
+                            <div class="vaults-grid" id="active-vaults-container">
+                                <!-- Dynamically loaded -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Notifications View [NEW] -->
+                <section id="view-notifications" class="view-pane">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Centre de Notifications</h2>
+                            <p>Restez informé sur les actualités de la bourse BVMAC, vos dividendes et la sécurité de votre compte.</p>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" id="btn-clear-notifications">
+                            <i data-lucide="check-square"></i> Tout marquer comme lu
+                        </button>
+                    </div>
+
+                    <div class="glass-card notifications-box">
+                        <div class="notifications-feed" id="notifications-feed-list">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. Mon Profil View [NEW] -->
+                <section id="view-profile" class="view-pane">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Mon Profil Financier</h2>
+                            <p>Gérez vos informations personnelles, votre compte bancaire et calculez votre profil d'investisseur.</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-layout-grid">
+                        
+                        <!-- Account Details Card -->
+                        <div class="glass-card profile-details-card">
+                            <h3><i data-lucide="user"></i> Informations Personnelles</h3>
+                            <hr class="divider">
+                            
+                            <div class="profile-info-fields">
+                                <div class="info-field-group">
+                                    <span class="info-field-label">Nom Complet</span>
+                                    <span class="info-field-val">Saunya Compta</span>
+                                </div>
+                                <div class="info-field-group">
+                                    <span class="info-field-label">Niveau de Compte</span>
+                                    <span class="info-field-val"><span class="subscription-badge free" id="profile-sub-badge">Standard (Gratuit)</span></span>
+                                </div>
+                                <div class="info-field-group">
+                                    <span class="info-field-label">Numéro de Téléphone</span>
+                                    <span class="info-field-val">+237 677 89 01 23 (MTN MoMo)</span>
+                                </div>
+                                <div class="info-field-group">
+                                    <span class="info-field-label">Adresse Email</span>
+                                    <span class="info-field-val">compta.saunya@agir.cm</span>
+                                </div>
+                                <div class="info-field-group">
+                                    <span class="info-field-label">Identité KYC</span>
+                                    <span class="info-field-val text-emerald"><i data-lucide="shield-check" class="icon-inline"></i> CNI Validée (Cameroun)</span>
+                                </div>
+                                <div class="info-field-group">
+                                    <span class="info-field-label">Banque Liée RIB (BVMAC)</span>
+                                    <span class="info-field-val font-mono">CM21 10005 00012 345678901 23 Afriland</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investor Profiler Quiz -->
+                        <div class="glass-card investor-profiler-card col-span-2">
+                            <div class="card-title-bar">
+                                <h3><i data-lucide="pie-chart"></i> Évaluez votre profil d'investisseur</h3>
+                                <span class="badge-tag" id="investor-risk-badge">Non Défini</span>
+                            </div>
+                            <p class="section-desc">Répondez à ce questionnaire rapide pour connaître votre sensibilité au risque et recevoir des suggestions automatiques d'allocations de fonds (Actions vs Obligations vs FCP).</p>
+                            
+                            <div class="quiz-form">
+                                <div class="quiz-question">
+                                    <label>1. Quel est votre objectif principal d'investissement ?</label>
+                                    <div class="quiz-options-grid">
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q1" value="1" checked>
+                                            <span>Protéger mon capital (Recherche de sécurité absolue)</span>
+                                        </label>
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q1" value="2">
+                                            <span>Générer un revenu régulier stable (Épargne/Rendement moyen)</span>
+                                        </label>
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q1" value="3">
+                                            <span>Maximiser le capital à long terme (Prise de risque acceptée)</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="quiz-question margin-top-md">
+                                    <label>2. Si vos investissements BVMAC chutent de 15% en un mois, quelle est votre réaction ?</label>
+                                    <div class="quiz-options-grid">
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q2" value="1" checked>
+                                            <span>Je vends tout immédiatement pour limiter les pertes</span>
+                                        </label>
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q2" value="2">
+                                            <span>Je ne fais rien et j'attends la remontée des cours</span>
+                                        </label>
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q2" value="3">
+                                            <span>J'en profite pour acheter plus d'actions à bas coût</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="quiz-question margin-top-md">
+                                    <label>3. Pendant combien de temps comptez-vous bloquer votre argent ?</label>
+                                    <div class="quiz-options-grid">
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q3" value="1" checked>
+                                            <span>Moins de 12 mois (Besoin de liquidité immédiate)</span>
+                                        </label>
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q3" value="2">
+                                            <span>Entre 1 et 3 ans</span>
+                                        </label>
+                                        <label class="quiz-option-card">
+                                            <input type="radio" name="q3" value="3">
+                                            <span>Plus de 5 ans</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions margin-top-lg">
+                                <button class="btn btn-primary" id="btn-calculate-risk-profile">Calculer mon profil d'investisseur</button>
+                            </div>
+
+                            <!-- Dynamic Quiz Results (Hidden initially) -->
+                            <div class="quiz-result-box margin-top-md" id="quiz-result-display" style="display: none;">
+                                <h4 id="result-profile-title">Profil Calculé : PRUDENT</h4>
+                                <p id="result-profile-desc">Vous privilégiez la protection de votre capital et la régularité. Vos allocations idéales sont orientées à 80% vers les obligations d'État sécurisées et les FCP liquides.</p>
+                                <div class="recommended-assets-links" id="result-recommended-assets">
+                                    <!-- Injected dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. Sécurité Shield View -->
+                <section id="view-security" class="view-pane">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Sécurité Shield & Paramètres</h2>
+                            <p>Contrôlez vos configurations de sécurité et auditez l'infrastructure de protection d'AGIR.</p>
+                        </div>
+                    </div>
+
+                    <div class="security-layout-grid">
+                        <!-- Security score widget -->
+                        <div class="grid-item glass-card security-score-panel">
+                            <div class="score-radial-wrapper">
+                                <div class="radial-progress" style="--percent: 92;">
+                                    <div class="radial-value">92%</div>
+                                </div>
+                                <div class="score-details">
+                                    <h3>Niveau de Sécurité</h3>
+                                    <span class="score-label secure"><i data-lucide="shield-check"></i> Excellent</span>
+                                </div>
+                            </div>
+                            <hr class="divider">
+                            <ul class="security-checklist">
+                                <li><i data-lucide="check-circle" class="check-green"></i> Chiffrement de base de données AES-256</li>
+                                <li><i data-lucide="check-circle" class="check-green"></i> Protocole de transport TLS 1.3 activé</li>
+                                <li><i data-lucide="check-circle" class="check-green"></i> Validation OTP par SMS opérationnelle</li>
+                                <li><i data-lucide="alert-circle" class="check-orange"></i> Code PIN de transaction à configurer</li>
+                            </ul>
+                        </div>
+
+                        <!-- Security settings config -->
+                        <div class="grid-item glass-card col-span-2">
+                            <h3><i data-lucide="shield"></i> Protection de vos transactions</h3>
+                            <p class="section-desc">Gérez la sécurité de vos retraits et de vos ordres d'investissements.</p>
+                            
+                            <div class="settings-form">
+                                <div class="form-row">
+                                    <div class="form-group flex-1">
+                                        <label>Double authentification (2FA)</label>
+                                        <select class="custom-select" id="security-2fa">
+                                            <option value="sms">SMS OTP (Recommandé)</option>
+                                            <option value="email">Email</option>
+                                            <option value="none">Désactiver (Non recommandé)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group flex-1">
+                                        <label>Délai d'expiration de session</label>
+                                        <select class="custom-select" id="security-session-timeout">
+                                            <option value="5">5 Minutes</option>
+                                            <option value="15" selected>15 Minutes</option>
+                                            <option value="60">1 Heure</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group flex-1">
+                                        <label>Code PIN de transaction (4 chiffres)</label>
+                                        <input type="password" class="custom-input" id="security-pin" placeholder="••••" maxlength="4">
+                                        <span class="input-tip">Requis pour confirmer vos ordres d'achat ou retraits.</span>
+                                    </div>
+                                    <div class="form-group flex-1 d-flex-align-end">
+                                        <button class="btn btn-secondary btn-block" id="btn-save-security-pin">
+                                            Mettre à jour le code PIN
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security logs audit -->
+                        <div class="grid-item glass-card col-span-3">
+                            <div class="card-title-bar">
+                                <h3><i data-lucide="history"></i> Journal d'Audit de Sécurité Récent</h3>
+                                <button class="btn btn-outline-primary btn-sm" id="btn-refresh-audit-logs">
+                                    <i data-lucide="refresh-cw"></i> Rafraîchir
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Date & Heure</th>
+                                            <th>Événement</th>
+                                            <th>Adresse IP / Appareil</th>
+                                            <th>Localisation</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="security-audit-logs">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Hidden on Desktop) -->
+    <div class="mobile-bottom-nav">
+        <a href="#" class="mobile-nav-item active" data-target="dashboard">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Accueil</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-target="market">
+            <i data-lucide="trending-up"></i>
+            <span>Marché</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-target="savings">
+            <i data-lucide="repeat"></i>
+            <span>Plans PIP</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-target="ai-analyst">
+            <i data-lucide="cpu"></i>
+            <span>IA</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-target="profile">
+            <i data-lucide="user"></i>
+            <span>Profil</span>
+        </a>
+    </div>
+
+    <!-- MODAL 1: DEPOSIT / WITHDRAW MODAL -->
+    <div class="modal-backdrop" id="cash-modal">
+        <div class="modal-container glass-card">
+            <div class="modal-header">
+                <h3 id="cash-modal-title">Déposer des fonds</h3>
+                <button class="btn-close-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Sélectionner le mode de paiement</label>
+                    <div class="payment-methods-grid">
+                        <div class="payment-method-card active" data-method="momo">
+                            <div class="method-icon momo-logo"></div>
+                            <span>MTN MoMo</span>
+                        </div>
+                        <div class="payment-method-card" data-method="om">
+                            <div class="method-icon om-logo"></div>
+                            <span>Orange Money</span>
+                        </div>
+                        <div class="payment-method-card" data-method="card">
+                            <div class="method-icon card-logo"><i data-lucide="credit-card"></i></div>
+                            <span>Carte Bancaire</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Montant (FCFA)</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="cash-modal-amount" placeholder="Entrez le montant" value="100000">
+                        <span class="suffix">FCFA</span>
+                    </div>
+                    <div class="input-limits" id="cash-modal-limits">Minimum 1 000 FCFA • Maximum 1 500 000 FCFA</div>
+                </div>
+
+                <div class="form-group" id="phone-number-field">
+                    <label>Numéro de téléphone Mobile Money</label>
+                    <div class="phone-input-wrapper">
+                        <span class="phone-prefix">+237</span>
+                        <input type="tel" id="cash-modal-phone" placeholder="67X XXX XXX" value="677890123">
+                    </div>
+                </div>
+
+                <div class="secure-checkout-notice">
+                    <i data-lucide="shield-check"></i>
+                    <span>Toutes vos transactions sont cryptées et protégées par notre module de sécurité.</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-close-modal">Annuler</button>
+                <button class="btn btn-primary" id="btn-submit-cash-action">Confirmer le dépôt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: BUY / SELL STOCK MODAL -->
+    <div class="modal-backdrop" id="trade-modal">
+        <div class="modal-container glass-card">
+            <div class="modal-header">
+                <h3 id="trade-modal-title">Acheter des actions</h3>
+                <button class="btn-close-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="trade-company-brief">
+                    <h4 id="trade-company-name">SOCAPALM</h4>
+                    <span class="trade-company-ticker" id="trade-company-ticker">SOCA</span>
+                    <span class="trade-company-sector" id="trade-company-sector">Agro-industrie</span>
+                </div>
+
+                <div class="trade-metrics-brief">
+                    <div class="brief-metric">
+                        <span class="brief-label">Cours / Valeur Actuelle</span>
+                        <span class="brief-value" id="trade-current-price">48 000 FCFA</span>
+                    </div>
+                    <div class="brief-metric">
+                        <span class="brief-label">Disponible Cash</span>
+                        <span class="brief-value text-gold" id="trade-available-cash">1 250 000 FCFA</span>
+                    </div>
+                </div>
+
+                <div class="trade-form">
+                    <div class="segmented-control trade-type-switch">
+                        <button class="segment-btn active" id="trade-type-buy">Achat / Souscription</button>
+                        <button class="segment-btn" id="trade-type-sell">Vente / Retrait</button>
+                    </div>
+
+                    <div class="form-group margin-top-lg">
+                        <label id="trade-qty-label">Nombre d'unités</label>
+                        <input type="number" id="trade-quantity" value="10" min="1">
+                    </div>
+
+                    <div class="trade-calculation-box">
+                        <div class="calc-row">
+                            <span>Montant brut</span>
+                            <span id="trade-subtotal">480 000 FCFA</span>
+                        </div>
+                        <div class="calc-row" id="trade-brokerage-fees-row">
+                            <span>Frais de courtage BVMAC (0.5%)</span>
+                            <span id="trade-fees">2 400 FCFA</span>
+                        </div>
+                        <hr class="divider">
+                        <div class="calc-row total">
+                            <span id="trade-total-label">Montant Total Estimé</span>
+                            <span id="trade-total">482 400 FCFA</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group margin-top-md" id="trade-pin-group">
+                        <label>Saisir votre Code PIN de transaction</label>
+                        <input type="password" class="custom-input pin-input" id="trade-pin" placeholder="••••" maxlength="4">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-close-modal">Annuler</button>
+                <button class="btn btn-primary" id="btn-submit-trade">Confirmer l'ordre</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: SUBSCRIPTION PAYMENT MODAL -->
+    <div class="modal-backdrop" id="subscription-checkout-modal">
+        <div class="modal-container modal-sm glass-card">
+            <div class="modal-header">
+                <h3>Passer à AGIR Pro AI</h3>
+                <button class="btn-close-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="checkout-product-details">
+                    <i data-lucide="sparkles" class="text-gold pulsing-sparkle"></i>
+                    <h4>Abonnement Mensuel AGIR Pro</h4>
+                    <p class="price-detail">15 000 FCFA / mois</p>
+                    <p class="desc-detail">Accès illimité à l'analyse financière par l'IA d'AGIR, aux ratios BVMAC et aux conseils d'investissement.</p>
+                </div>
+
+                <div class="checkout-form text-left">
+                    <div class="form-group">
+                        <label>Choisir le mode de paiement mobile</label>
+                        <div class="checkout-momo-grid">
+                            <div class="momo-checkout-card active" data-checkout-momo="momo">
+                                <div class="momo-icon-sm mtn"></div>
+                                <span>MTN MoMo</span>
+                            </div>
+                            <div class="momo-checkout-card" data-checkout-momo="om">
+                                <div class="momo-icon-sm om"></div>
+                                <span>Orange Money</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Numéro de téléphone de débit</label>
+                        <div class="phone-input-wrapper">
+                            <span class="phone-prefix">+237</span>
+                            <input type="tel" id="checkout-phone" placeholder="67X XXX XXX" value="677890123">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Processing Screen -->
+                <div class="processing-screen" id="checkout-processing-screen" style="display: none;">
+                    <div class="spinner-container">
+                        <div class="custom-spinner"></div>
+                    </div>
+                    <h4 id="processing-status-title">Initialisation du paiement...</h4>
+                    <p id="processing-status-desc">Une demande de paiement a été envoyée sur votre téléphone. Veuillez approuver sur votre terminal mobile.</p>
+                    
+                    <div class="mock-phone-notification" id="mock-otp-notification" style="display: none;">
+                        <div class="mock-notification-header">
+                            <span class="notifier-name">Simulateur Téléphone</span>
+                            <span class="notifier-time">Maintenant</span>
+                        </div>
+                        <p class="notifier-body">MTN MoMo: Saisir code PIN pour confirmer le paiement de 15 000 FCFA vers AGIR. Entrez <strong>1234</strong> pour simuler la validation.</p>
+                        <div class="otp-input-box">
+                            <input type="text" id="checkout-simulated-otp" placeholder="PIN de simulation" maxlength="4">
+                            <button class="btn btn-sm btn-primary" id="btn-submit-simulated-otp">Valider</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="checkout-modal-footer">
+                <button class="btn btn-secondary btn-close-modal">Annuler</button>
+                <button class="btn btn-primary" id="btn-pay-now">Payer 15 000 FCFA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: DOCUMENT READER MODAL [NEW] -->
+    <div class="modal-backdrop" id="document-modal">
+        <div class="modal-container glass-card" style="width: 580px;">
+            <div class="modal-header">
+                <h3 id="document-modal-title">Visionneuse de Document BVMAC</h3>
+                <button class="btn-close-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="document-meta-bar" style="background:rgba(255,255,255,0.02); padding:10px 14px; border-radius:8px; border:1px solid var(--border-color); display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary);">
+                    <span id="document-meta-file">Nom : Rapport_Annuel_2025.pdf</span>
+                    <span id="document-meta-size">Taille : 3.4 Mo</span>
+                </div>
+                
+                <div class="document-page-preview" style="background: rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:8px; padding:24px; min-height:220px; font-size:13px; line-height:1.6; max-height: 350px; overflow-y: auto;">
+                    <h4 id="document-preview-title" style="font-family:var(--font-heading); margin-bottom:12px; color:var(--primary-glow);">SOCAPALM - Extrait du Bilan Financier 2025</h4>
+                    <p id="document-preview-text" style="color:var(--text-secondary);">Chargement de l'aperçu du document...</p>
+                </div>
+                
+                <div class="secure-download-notice" style="display:flex; align-items:center; gap:8px; font-size:11px; color:var(--success);">
+                    <i data-lucide="shield-check"></i>
+                    <span>Ce document officiel est certifié conforme et signé électroniquement par l'UMAC.</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-close-modal">Fermer</button>
+                <button class="btn btn-primary" id="btn-download-document-action">
+                    <i data-lucide="download"></i> Télécharger le PDF complet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript App -->
+    <script src="app.js"></script>
+</body>
+</html>
