@@ -1768,44 +1768,126 @@ function setupCashModal() {
         });
     });
 
+    // FX rates database inside client
+    const clientRates = {
+        'XAF': { rate: 1.0, flag: '🇨🇲', name: 'Franc CFA (CEMAC)' },
+        'EUR': { rate: 655.9570, flag: '🇪🇺', name: 'Euro' },
+        'USD': { rate: 605.5000, flag: '🇺🇸', name: 'Dollar Américain' },
+        'NGN': { rate: 0.4000, flag: '🇳🇬', name: 'Naira Nigérian' },
+        'ZAR': { rate: 32.5000, flag: '🇿🇦', name: 'Rand Sud-Africain' },
+        'KES': { rate: 4.7000, flag: '🇰🇪', name: 'Shilling Kenyan' }
+    };
+
+    const currencySelect = document.getElementById('cash-modal-currency');
+    const fxRateDisplay = document.getElementById('cash-modal-fx-display');
+    const conversionBox = document.getElementById('cash-modal-conversion-box');
+    const amountLabel = document.getElementById('amount-input-label');
+    const amountSuffix = document.getElementById('cash-modal-suffix');
+    const phoneField = document.getElementById('phone-number-field');
+    const cardField = document.getElementById('card-form-field');
+    const amountInput = document.getElementById('cash-modal-amount');
+    const pinField = document.getElementById('cash-modal-pin');
+
+    function updateFXDepositMetrics() {
+        if (!currencySelect || !amountInput) return;
+        
+        const currency = currencySelect.value;
+        const rateInfo = clientRates[currency];
+        if (!rateInfo) return;
+
+        const rate = rateInfo.rate;
+        const amount = parseFloat(amountInput.value) || 0;
+
+        if (currency === 'XAF') {
+            if (fxRateDisplay) fxRateDisplay.style.display = 'none';
+            if (conversionBox) conversionBox.style.display = 'none';
+            if (phoneField) phoneField.style.display = 'block';
+            if (cardField) cardField.style.display = 'none';
+            if (amountLabel) amountLabel.innerText = "Montant (XAF)";
+            if (amountSuffix) amountSuffix.innerText = "FCFA";
+        } else {
+            if (fxRateDisplay) {
+                fxRateDisplay.style.display = 'block';
+                fxRateDisplay.innerText = `1 ${currency} = ${rate.toFixed(2)} FCFA (Taux en direct)`;
+            }
+            if (conversionBox) conversionBox.style.display = 'block';
+            if (phoneField) phoneField.style.display = 'none';
+            if (cardField) cardField.style.display = 'block';
+            if (amountLabel) amountLabel.innerText = `Montant (${currency})`;
+            if (amountSuffix) amountSuffix.innerText = currency;
+
+            const totalXaf = amount * rate;
+            const fees = Math.round(totalXaf * 0.005); // 0.5% FX Fee
+            const netXaf = totalXaf - fees;
+
+            const creditedText = document.getElementById('cash-modal-credited-display');
+            if (creditedText) creditedText.innerText = formatXAF(netXaf);
+            const feesText = document.getElementById('cash-modal-fees-display');
+            if (feesText) feesText.innerText = formatXAF(fees);
+        }
+    }
+
+    if (currencySelect) {
+        currencySelect.addEventListener('change', updateFXDepositMetrics);
+    }
+    if (amountInput) {
+        amountInput.addEventListener('input', updateFXDepositMetrics);
+    }
+
     const submitBtn = document.getElementById('btn-submit-cash-action');
     submitBtn.addEventListener('click', () => {
-        const amount = parseInt(document.getElementById('cash-modal-amount').value) || 0;
-        const activeMethodCard = document.querySelector('.payment-method-card.active');
-        const method = activeMethodCard ? activeMethodCard.getAttribute('data-method') : 'momo';
-        const methodLabel = method === 'momo' ? 'MTN MoMo' : method === 'om' ? 'Orange Money' : 'Carte Bancaire';
-
-        if (amount < 1000) {
-            alert("Erreur: Le montant minimum est de 1 000 FCFA.");
+        const currency = currencySelect ? currencySelect.value : 'XAF';
+        const rateInfo = clientRates[currency];
+        const rate = rateInfo ? rateInfo.rate : 1.0;
+        const amountLocal = parseFloat(amountInput.value) || 0;
+        
+        const pin = pinField ? pinField.value : '';
+        if (pin !== '0000') {
+            alert("Sécurité Shield: Code PIN de transaction incorrect.");
             return;
         }
 
+        if (amountLocal <= 0) {
+            alert("Erreur: Veuillez saisir un montant supérieur à 0.");
+            return;
+        }
+
+        const amountXaf = amountLocal * rate;
+        const feesXaf = currency === 'XAF' ? 0 : Math.round(amountXaf * 0.005);
+        const netCreditedXaf = amountXaf - feesXaf;
+
+        // Route Payment Gateway description
+        let gateway = 'GIMAC / CinetPay';
+        if (currency !== 'XAF') {
+            gateway = (currency === 'USD' || currency === 'EUR') ? 'Stripe Gateway' : 'Flutterwave Hub';
+        }
+
         if (activeCashType === 'deposit') {
-            appState.cashBalance += amount;
+            appState.cashBalance += netCreditedXaf;
             appState.transactions.unshift({
                 type: 'deposit',
-                method: methodLabel,
+                method: gateway,
                 date: new Date().toISOString().slice(0, 16).replace('T', ' '),
-                amount: amount
+                amount: netCreditedXaf
             });
-            logSecurityEvent(`Dépôt de ${formatXAF(amount)} via ${methodLabel}`, "Success");
-            triggerNotification('trade-alert', 'Dépôt validé', `Un versement de ${formatXAF(amount)} a été crédité via ${methodLabel}.`);
-            alert(`Dépôt simulé réussi ! ${formatXAF(amount)} ont été ajoutés.`);
+            logSecurityEvent(`Dépôt de ${amountLocal} ${currency} (${formatXAF(netCreditedXaf)} net) via ${gateway}`, "Success");
+            triggerNotification('trade-alert', 'Dépôt validé', `Votre recharge de ${amountLocal} ${currency} a été créditée en ${formatXAF(netCreditedXaf)} via ${gateway}.`);
+            alert(`Dépôt réussi !\nVotre solde a été crédité de ${formatXAF(netCreditedXaf)}.`);
         } else {
-            if (appState.cashBalance < amount) {
+            if (appState.cashBalance < amountXaf) {
                 alert("Solde insuffisant.");
                 return;
             }
-            appState.cashBalance -= amount;
+            appState.cashBalance -= amountXaf;
             appState.transactions.unshift({
                 type: 'withdraw',
-                method: methodLabel,
+                method: gateway,
                 date: new Date().toISOString().slice(0, 16).replace('T', ' '),
-                amount: amount
+                amount: amountXaf
             });
-            logSecurityEvent(`Retrait de ${formatXAF(amount)} via ${methodLabel}`, "Success");
-            triggerNotification('trade-alert', 'Retrait validé', `Un retrait de ${formatXAF(amount)} a été débité vers ${methodLabel}.`);
-            alert(`Retrait simulé réussi ! ${formatXAF(amount)} ont été débités.`);
+            logSecurityEvent(`Retrait de ${amountLocal} ${currency} (${formatXAF(amountXaf)}) vers ${gateway}`, "Success");
+            triggerNotification('trade-alert', 'Retrait validé', `Un retrait de ${amountLocal} ${currency} (${formatXAF(amountXaf)}) a été débité vers ${gateway}.`);
+            alert(`Retrait réussi !\nUn montant de ${formatXAF(amountXaf)} a été débité.`);
         }
 
         closeModal('cash-modal');
@@ -1887,11 +1969,48 @@ function updateTradeCalculations() {
     document.getElementById('trade-subtotal').innerText = formatXAF(subtotal);
     document.getElementById('trade-fees').innerText = formatXAF(fees);
     document.getElementById('trade-total').innerText = formatXAF(total);
+
+    // Multi-currency FX conversion calculations inside Trade modal
+    const currencySelect = document.getElementById('trade-currency');
+    const fxRateDisplay = document.getElementById('trade-fx-rate-display');
+    const localCostRow = document.getElementById('trade-local-cost-row');
+    const localCostValue = document.getElementById('trade-local-cost-value');
+
+    const rates = {
+        'XAF': 1.0,
+        'EUR': 655.9570,
+        'USD': 605.5000,
+        'NGN': 0.4000,
+        'ZAR': 32.5000,
+        'KES': 4.7000
+    };
+
+    if (currencySelect && fxRateDisplay && localCostRow && localCostValue) {
+        const currency = currencySelect.value;
+        const rate = rates[currency] || 1.0;
+
+        if (currency === 'XAF') {
+            fxRateDisplay.style.display = 'none';
+            localCostRow.style.display = 'none';
+        } else {
+            fxRateDisplay.style.display = 'block';
+            fxRateDisplay.innerText = `1 ${currency} = ${rate.toFixed(2)} FCFA (Taux BVMAC Bloqué)`;
+            localCostRow.style.display = 'flex';
+            
+            const costLocal = total / rate;
+            localCostValue.innerText = `${costLocal.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} ${currency}`;
+        }
+    }
 }
 
 function setupTradeModal() {
     const qtyInput = document.getElementById('trade-quantity');
     qtyInput.addEventListener('input', updateTradeCalculations);
+
+    const currencySelect = document.getElementById('trade-currency');
+    if (currencySelect) {
+        currencySelect.addEventListener('change', updateTradeCalculations);
+    }
 
     const buyBtn = document.getElementById('trade-type-buy');
     const sellBtn = document.getElementById('trade-type-sell');
@@ -1933,6 +2052,17 @@ function setupTradeModal() {
         const total = activeTradeType === 'buy' ? (subtotal + fees) : (subtotal - fees);
         
         const pin = document.getElementById('trade-pin').value;
+        const currency = currencySelect ? currencySelect.value : 'XAF';
+        const rates = {
+            'XAF': 1.0,
+            'EUR': 655.9570,
+            'USD': 605.5000,
+            'NGN': 0.4000,
+            'ZAR': 32.5000,
+            'KES': 4.7000
+        };
+        const rate = rates[currency] || 1.0;
+        const costLocal = total / rate;
 
         if (pin !== appState.transactionPin) {
             logSecurityEvent(`Échec d'ordre: PIN incorrect`, "Failure");
@@ -1971,9 +2101,9 @@ function setupTradeModal() {
                 amount: total
             });
 
-            logSecurityEvent(`Achat actif: ${qty} ${asset.ticker}`, "Success");
+            logSecurityEvent(`Achat actif: ${qty} ${asset.ticker} pour ${costLocal.toFixed(2)} ${currency} (Taux: ${rate.toFixed(4)})`, "Success");
             triggerNotification('trade-alert', 'Investissement validé', `Votre souscription pour ${qty} unités de ${asset.name} a été enregistrée.`);
-            alert(`Investissement exécuté avec succès !\nVous détenez désormais des parts de ${asset.fullName}.`);
+            alert(`Investissement exécuté avec succès !\nMontant débité : ${costLocal.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} ${currency} (équivalent ${formatXAF(total)}).\nVous détenez désormais des parts de ${asset.fullName}.`);
 
         } else {
             const holdingIndex = appState.portfolio.findIndex(p => p.ticker === asset.ticker);
@@ -1997,9 +2127,9 @@ function setupTradeModal() {
                 amount: total
             });
 
-            logSecurityEvent(`Cession actif: ${qty} ${asset.ticker}`, "Success");
+            logSecurityEvent(`Cession actif: ${qty} ${asset.ticker} pour ${costLocal.toFixed(2)} ${currency} (Taux: ${rate.toFixed(4)})`, "Success");
             triggerNotification('trade-alert', 'Retrait / Vente validé', `La revente de ${qty} unités de ${asset.name} a été exécutée. Votre solde a été crédité.`);
-            alert(`Ordre de cession exécuté ! Vos liquidités ont été créditées de ${formatXAF(total)}.`);
+            alert(`Ordre de cession exécuté !\nVos liquidités ont été créditées de ${formatXAF(total)} (soit ${costLocal.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} ${currency}).`);
         }
 
         closeModal('trade-modal');

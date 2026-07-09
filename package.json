@@ -1,0 +1,27 @@
+{
+  "name": "agir-fintech",
+  "version": "1.0.0",
+  "description": "AGIR FinTech - Multi-currency FX Investment Dashboard Front-end",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "keywords": [
+    "fintech",
+    "supabase",
+    "typescript",
+    "fx",
+    "gemacpay",
+    "stripe",
+    "flutterwave"
+  ],
+  "author": "AGIR Dev Team",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

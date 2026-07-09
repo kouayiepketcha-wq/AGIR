@@ -804,9 +804,26 @@
                 <button class="btn-close-modal"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
+                <!-- Currency Selector -->
                 <div class="form-group">
-                    <label>Sélectionner le mode de paiement</label>
-                    <div class="payment-methods-grid">
+                    <label>Devise de Recharge</label>
+                    <select id="cash-modal-currency" class="custom-select" style="width: 100%; margin-bottom: 12px; background: rgba(10, 15, 29, 0.95); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;">
+                        <option value="XAF">🇨🇲 XAF - Franc CFA (Afrique Centrale)</option>
+                        <option value="EUR">🇪🇺 EUR - Euro (Zone Euro)</option>
+                        <option value="USD">🇺🇸 USD - Dollar Américain</option>
+                        <option value="NGN">🇳🇬 NGN - Naira Nigérian</option>
+                        <option value="ZAR">🇿🇦 ZAR - Rand Sud-Africain</option>
+                        <option value="KES">🇰🇪 KES - Shilling Kenyan</option>
+                    </select>
+                    <div id="cash-modal-fx-display" class="fx-rate-stamp" style="font-size: 11px; color: var(--primary); margin-top: -6px; margin-bottom: 12px; display: none;">
+                        1 USD = 605.50 FCFA (Taux en direct)
+                    </div>
+                </div>
+
+                <!-- Payment Method (Dynamic based on selected currency) -->
+                <div class="form-group" id="cash-modal-gateway-section">
+                    <label>Mode de paiement</label>
+                    <div class="payment-methods-grid" id="deposit-payment-grid">
                         <div class="payment-method-card active" data-method="momo">
                             <div class="method-icon momo-logo"></div>
                             <span>MTN MoMo</span>
@@ -815,28 +832,53 @@
                             <div class="method-icon om-logo"></div>
                             <span>Orange Money</span>
                         </div>
-                        <div class="payment-method-card" data-method="card">
-                            <div class="method-icon card-logo"><i data-lucide="credit-card"></i></div>
-                            <span>Carte Bancaire</span>
-                        </div>
                     </div>
                 </div>
 
+                <!-- Amount Input -->
                 <div class="form-group">
-                    <label>Montant (FCFA)</label>
+                    <label id="amount-input-label">Montant (XAF)</label>
                     <div class="input-with-suffix">
-                        <input type="number" id="cash-modal-amount" placeholder="Entrez le montant" value="100000">
-                        <span class="suffix">FCFA</span>
+                        <input type="number" id="cash-modal-amount" placeholder="Entrez le montant" value="10000">
+                        <span class="suffix" id="cash-modal-suffix">FCFA</span>
                     </div>
                     <div class="input-limits" id="cash-modal-limits">Minimum 1 000 FCFA • Maximum 1 500 000 FCFA</div>
                 </div>
 
+                <!-- Real-time FX Conversion Display (Only when currency !== XAF) -->
+                <div class="fx-converter-box" id="cash-modal-conversion-box" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+                        <span>Équivalent Crédité :</span>
+                        <strong class="text-gold" id="cash-modal-credited-display">0 FCFA</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary);">
+                        <span>Frais FX (0.5%) :</span>
+                        <span id="cash-modal-fees-display">0 FCFA</span>
+                    </div>
+                </div>
+
+                <!-- Phone number field / Card form (Dynamic) -->
                 <div class="form-group" id="phone-number-field">
                     <label>Numéro de téléphone Mobile Money</label>
                     <div class="phone-input-wrapper">
                         <span class="phone-prefix">+237</span>
                         <input type="tel" id="cash-modal-phone" placeholder="67X XXX XXX" value="677890123">
                     </div>
+                </div>
+
+                <div class="form-group" id="card-form-field" style="display: none;">
+                    <label>Formulaire de Paiement Sécurisé (Stripe-MCP / Flutterwave-MCP)</label>
+                    <div style="display: flex; gap: 8px; margin-top: 4px;">
+                        <input type="text" class="custom-input" placeholder="Numéro de carte" style="flex: 2; padding: 10px; border-radius: 8px;">
+                        <input type="text" class="custom-input" placeholder="MM/AA" style="flex: 0.6; padding: 10px; border-radius: 8px;">
+                        <input type="text" class="custom-input" placeholder="CVV" style="flex: 0.6; padding: 10px; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <!-- PIN verification -->
+                <div class="form-group" style="max-width: 200px; margin-bottom: 16px;">
+                    <label>Code PIN de transaction (4 chiffres)</label>
+                    <input type="password" id="cash-modal-pin" class="custom-input pin-input-centered" placeholder="••••" maxlength="4" value="0000" style="text-align: center; font-weight: bold; letter-spacing: 4px;">
                 </div>
 
                 <div class="secure-checkout-notice">
@@ -887,6 +929,22 @@
                         <input type="number" id="trade-quantity" value="10" min="1">
                     </div>
 
+                    <!-- Devise de Règlement (FX) -->
+                    <div class="form-group margin-top-md" id="trade-currency-group">
+                        <label>Devise de Règlement (FX)</label>
+                        <select id="trade-currency" class="custom-select" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(10, 15, 29, 0.95); color: var(--text-primary); border: 1px solid var(--border-color);">
+                            <option value="XAF">🇨🇲 XAF - Franc CFA (Afrique Centrale)</option>
+                            <option value="EUR">🇪🇺 EUR - Euro</option>
+                            <option value="USD">🇺🇸 USD - Dollar Américain</option>
+                            <option value="NGN">🇳🇬 NGN - Naira Nigérian</option>
+                            <option value="ZAR">🇿🇦 ZAR - Rand Sud-Africain</option>
+                            <option value="KES">🇰🇪 KES - Shilling Kenyan</option>
+                        </select>
+                        <div id="trade-fx-rate-display" class="fx-rate-stamp" style="font-size: 11px; color: var(--primary); margin-top: 4px; display: none;">
+                            1 USD = 605.50 FCFA
+                        </div>
+                    </div>
+
                     <div class="trade-calculation-box">
                         <div class="calc-row">
                             <span>Montant brut</span>
@@ -895,6 +953,10 @@
                         <div class="calc-row" id="trade-brokerage-fees-row">
                             <span>Frais de courtage BVMAC (0.5%)</span>
                             <span id="trade-fees">2 400 FCFA</span>
+                        </div>
+                        <div class="calc-row" id="trade-local-cost-row" style="display: none; background: rgba(212, 175, 55, 0.05); padding: 6px 8px; border-radius: 6px; margin: 6px 0;">
+                            <span style="color: var(--primary); font-weight: 500;">Montant prélevé (FX)</span>
+                            <strong style="color: var(--primary);" id="trade-local-cost-value">0.00 USD</strong>
                         </div>
                         <hr class="divider">
                         <div class="calc-row total">
