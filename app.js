@@ -1771,8 +1771,10 @@ function setupCashModal() {
     // FX rates database inside client
     const clientRates = {
         'XAF': { rate: 1.0, flag: '🇨🇲', name: 'Franc CFA (CEMAC)' },
+        'XOF': { rate: 1.0, flag: '🇸🇳', name: 'Franc CFA (UEMOA)' },
         'EUR': { rate: 655.9570, flag: '🇪🇺', name: 'Euro' },
         'USD': { rate: 605.5000, flag: '🇺🇸', name: 'Dollar Américain' },
+        'GBP': { rate: 770.2000, flag: '🇬🇧', name: 'Livre Sterling' },
         'NGN': { rate: 0.4000, flag: '🇳🇬', name: 'Naira Nigérian' },
         'ZAR': { rate: 32.5000, flag: '🇿🇦', name: 'Rand Sud-Africain' },
         'KES': { rate: 4.7000, flag: '🇰🇪', name: 'Shilling Kenyan' }
@@ -1798,14 +1800,14 @@ function setupCashModal() {
         const rate = rateInfo.rate;
         const amount = parseFloat(amountInput.value) || 0;
 
-        if (currency === 'XAF') {
+        if (currency === 'XAF' || currency === 'XOF') {
             if (fxRateDisplay) fxRateDisplay.style.display = 'none';
             if (conversionBox) conversionBox.style.display = 'none';
             if (phoneField) phoneField.style.display = 'block';
             if (cardField) cardField.style.display = 'none';
             if (gatewaySection) gatewaySection.style.display = 'block';
-            if (amountLabel) amountLabel.innerText = "Montant (XAF)";
-            if (amountSuffix) amountSuffix.innerText = "FCFA";
+            if (amountLabel) amountLabel.innerText = `Montant (${currency})`;
+            if (amountSuffix) amountSuffix.innerText = currency === 'XAF' ? 'FCFA' : 'F.CFA';
         } else {
             if (fxRateDisplay) {
                 fxRateDisplay.style.display = 'block';
@@ -1835,6 +1837,55 @@ function setupCashModal() {
     if (amountInput) {
         amountInput.addEventListener('input', updateFXDepositMetrics);
     }
+
+    // Reorganised Currency Flag Cards grid handler
+    const currencyFlagCards = document.querySelectorAll('#deposit-currency-grid .currency-flag-card');
+    const countryPrefixSelect = document.getElementById('cash-modal-country-prefix');
+    
+    currencyFlagCards.forEach(card => {
+        card.addEventListener('click', () => {
+            currencyFlagCards.forEach(c => {
+                c.classList.remove('active');
+                c.style.background = 'rgba(255, 255, 255, 0.02)';
+                c.style.borderColor = 'var(--border-color)';
+                const tag = c.querySelector('.currency-tag');
+                if (tag) tag.style.color = 'var(--text-secondary)';
+            });
+
+            card.classList.add('active');
+            card.style.background = 'rgba(212, 175, 55, 0.08)';
+            card.style.borderColor = 'var(--primary)';
+            const tag = card.querySelector('.currency-tag');
+            if (tag) tag.style.color = 'var(--primary)';
+
+            const selectedCurrency = card.getAttribute('data-currency');
+            if (currencySelect) {
+                currencySelect.value = selectedCurrency;
+                currencySelect.dispatchEvent(new Event('change'));
+            }
+
+            // Automatically set default country prefixes based on selected currency
+            if (countryPrefixSelect) {
+                if (selectedCurrency === 'XAF') {
+                    countryPrefixSelect.value = '+237'; // Cameroon
+                } else if (selectedCurrency === 'XOF') {
+                    countryPrefixSelect.value = '+221'; // Senegal
+                } else if (selectedCurrency === 'NGN') {
+                    countryPrefixSelect.value = '+234'; // Nigeria
+                } else if (selectedCurrency === 'ZAR') {
+                    countryPrefixSelect.value = '+27';  // South Africa
+                } else if (selectedCurrency === 'KES') {
+                    countryPrefixSelect.value = '+254'; // Kenya
+                } else if (selectedCurrency === 'USD') {
+                    countryPrefixSelect.value = '+1';   // US
+                } else if (selectedCurrency === 'GBP') {
+                    countryPrefixSelect.value = '+44';  // UK
+                } else if (selectedCurrency === 'EUR') {
+                    countryPrefixSelect.value = '+33';  // France
+                }
+            }
+        });
+    });
 
     // USSD SIM Push Dialog controllers
     const ussdDialog = document.getElementById('ussd-push-dialog');
@@ -1903,7 +1954,7 @@ function setupCashModal() {
         }
 
         const amountXaf = amountLocal * rate;
-        const feesXaf = currency === 'XAF' ? 0 : Math.round(amountXaf * 0.005);
+        const feesXaf = (currency === 'XAF' || currency === 'XOF') ? 0 : Math.round(amountXaf * 0.005);
         const netCreditedXaf = amountXaf - feesXaf;
 
         // Route Payment Gateway description
@@ -1919,14 +1970,18 @@ function setupCashModal() {
         };
         
         let gateway = methodLabels[method] || 'MTN MoMo';
-        if (currency !== 'XAF') {
+        if (currency !== 'XAF' && currency !== 'XOF') {
             gateway = (currency === 'USD' || currency === 'EUR') ? 'Stripe Gateway' : 'Flutterwave Hub';
         }
 
         if (activeCashType === 'deposit') {
-            if (currency === 'XAF') {
+            if (currency === 'XAF' || currency === 'XOF') {
                 // Initiates dynamic USSD Push dialogue simulation
+                const prefixSelect = document.getElementById('cash-modal-country-prefix');
+                const prefix = prefixSelect ? prefixSelect.value : '+237';
                 const phone = document.getElementById('cash-modal-phone').value || '677890123';
+                const fullPhone = prefix + ' ' + phone;
+
                 pendingDepositData = {
                     amountXaf: netCreditedXaf,
                     amountLocal: amountLocal,
@@ -1936,7 +1991,8 @@ function setupCashModal() {
 
                 if (ussdDialog) {
                     document.getElementById('ussd-operator-name').innerText = gateway;
-                    document.getElementById('ussd-push-message').innerText = `Autoriser le débit de ${formatXAF(amountLocal)} initié par AGIR FinTech vers le numéro ${phone} ?`;
+                    const formattedAmountText = currency === 'XAF' ? formatXAF(amountLocal) : `${amountLocal} ${currency}`;
+                    document.getElementById('ussd-push-message').innerText = `Autoriser le débit de ${formattedAmountText} initié par AGIR FinTech vers le numéro ${fullPhone} ?`;
                     if (ussdPinInput) ussdPinInput.value = '';
                     ussdDialog.style.display = 'flex';
                 }

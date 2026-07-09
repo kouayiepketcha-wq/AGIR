@@ -803,26 +803,63 @@
                 <h3 id="cash-modal-title">Déposer des fonds</h3>
                 <button class="btn-close-modal"><i data-lucide="x"></i></button>
             </div>
-            <div class="modal-body">
-                <!-- Currency Selector -->
-                <div class="form-group">
-                    <label>Devise de Recharge</label>
-                    <select id="cash-modal-currency" class="custom-select" style="width: 100%; margin-bottom: 12px; background: rgba(10, 15, 29, 0.95); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;">
-                        <option value="XAF">🇨🇲 XAF - Franc CFA (Afrique Centrale)</option>
-                        <option value="EUR">🇪🇺 EUR - Euro (Zone Euro)</option>
-                        <option value="USD">🇺🇸 USD - Dollar Américain</option>
-                        <option value="NGN">🇳🇬 NGN - Naira Nigérian</option>
-                        <option value="ZAR">🇿🇦 ZAR - Rand Sud-Africain</option>
-                        <option value="KES">🇰🇪 KES - Shilling Kenyan</option>
+            <div class="modal-body" style="padding-top: 8px;">
+                <!-- STEP 1: SELECT CURRENCY (GRID OF FLAGS) -->
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="fx-field-label" style="margin-bottom: 10px; display: block; font-size: 13px; font-weight: 600;">1. Choisir la devise locale de facturation</label>
+                    <div class="currency-flags-grid" id="deposit-currency-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                        <div class="currency-flag-card active" data-currency="XAF" data-rate="1.0" title="Franc CFA CEMAC" style="background: rgba(212, 175, 55, 0.08); border: 1.5px solid var(--primary); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇨🇲</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--primary);">XAF</span>
+                        </div>
+                        <div class="currency-flag-card" data-currency="XOF" data-rate="1.0000" title="Franc CFA UEMOA" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇸🇳</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--text-secondary);">XOF</span>
+                        </div>
+                        <div class="currency-flag-card" data-currency="EUR" data-rate="655.9570" title="Euro" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇪🇺</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--text-secondary);">EUR</span>
+                        </div>
+                        <div class="currency-flag-card" data-currency="USD" data-rate="605.5000" title="US Dollar" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇺🇸</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--text-secondary);">USD</span>
+                        </div>
+                        <div class="currency-flag-card" data-currency="GBP" data-rate="770.2000" title="Livre Sterling" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇬🇧</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--text-secondary);">GBP</span>
+                        </div>
+                        <div class="currency-flag-card" data-currency="NGN" data-rate="0.4000" title="Naira Nigérian" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇳🇬</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--text-secondary);">NGN</span>
+                        </div>
+                        <div class="currency-flag-card" data-currency="ZAR" data-rate="32.5000" title="Rand Sud-Africain" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇿🇦</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--text-secondary);">ZAR</span>
+                        </div>
+                        <div class="currency-flag-card" data-currency="KES" data-rate="4.7000" title="Shilling Kenyan" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="flag-icon" style="font-size: 24px;">🇰🇪</span>
+                            <span class="currency-tag" style="font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--text-secondary);">KES</span>
+                        </div>
+                    </div>
+                    <!-- Hidden select node to keep compatibility with JS events -->
+                    <select id="cash-modal-currency" style="display: none;">
+                        <option value="XAF" selected>XAF</option>
+                        <option value="XOF">XOF</option>
+                        <option value="EUR">EUR</option>
+                        <option value="USD">USD</option>
+                        <option value="GBP">GBP</option>
+                        <option value="NGN">NGN</option>
+                        <option value="ZAR">ZAR</option>
+                        <option value="KES">KES</option>
                     </select>
-                    <div id="cash-modal-fx-display" class="fx-rate-stamp" style="font-size: 11px; color: var(--primary); margin-top: -6px; margin-bottom: 12px; display: none;">
+                    <div id="cash-modal-fx-display" class="fx-rate-stamp" style="font-size: 11px; color: var(--primary); margin-top: 8px; font-weight: 600; display: none;">
                         1 USD = 605.50 FCFA (Taux en direct)
                     </div>
                 </div>
 
-                <!-- Payment Method (Dynamic based on selected currency) -->
-                <div class="form-group" id="cash-modal-gateway-section">
-                    <label>Opérateurs de paiement mobile</label>
+                <!-- STEP 2: DYNAMIC METHOD SELECTOR -->
+                <div class="form-group" id="cash-modal-gateway-section" style="margin-bottom: 16px;">
+                    <label class="fx-field-label" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px;">2. Sélectionner le mode de paiement mobile</label>
                     <div class="payment-methods-grid" id="deposit-payment-grid" style="grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important;">
                         <div class="payment-method-card active" data-method="momo">
                             <div class="method-icon momo-logo"></div>
@@ -851,19 +888,19 @@
                     </div>
                 </div>
 
-                <!-- Amount Input -->
-                <div class="form-group">
-                    <label id="amount-input-label">Montant (XAF)</label>
+                <!-- STEP 3: AMOUNT INPUT -->
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label id="amount-input-label" class="fx-field-label" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px;">3. Saisir le montant du dépôt</label>
                     <div class="input-with-suffix">
-                        <input type="number" id="cash-modal-amount" placeholder="Entrez le montant" value="10000">
-                        <span class="suffix" id="cash-modal-suffix">FCFA</span>
+                        <input type="number" id="cash-modal-amount" placeholder="Entrez le montant" value="10000" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; width: 100%;">
+                        <span class="suffix" id="cash-modal-suffix" style="font-weight: 700; color: var(--primary);">FCFA</span>
                     </div>
-                    <div class="input-limits" id="cash-modal-limits">Minimum 1 000 FCFA • Maximum 1 500 000 FCFA</div>
+                    <div class="input-limits" id="cash-modal-limits" style="font-size: 10px; color: var(--text-secondary); margin-top: 4px;">Minimum 1 000 FCFA • Maximum 1 500 000 FCFA</div>
                 </div>
 
-                <!-- Real-time FX Conversion Display (Only when currency !== XAF) -->
-                <div class="fx-converter-box" id="cash-modal-conversion-box" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+                <!-- Real-time FX Conversion Display -->
+                <div class="fx-converter-box" id="cash-modal-conversion-box" style="display: none; background: rgba(212, 175, 55, 0.04); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; color: #fff;">
                         <span>Équivalent Crédité :</span>
                         <strong class="text-gold" id="cash-modal-credited-display">0 FCFA</strong>
                     </div>
@@ -873,31 +910,54 @@
                     </div>
                 </div>
 
-                <!-- Phone number field / Card form (Dynamic) -->
-                <div class="form-group" id="phone-number-field">
-                    <label>Numéro de téléphone Mobile Money</label>
-                    <div class="phone-input-wrapper">
-                        <span class="phone-prefix">+237</span>
-                        <input type="tel" id="cash-modal-phone" placeholder="67X XXX XXX" value="677890123">
+                <!-- STEP 4: DETAILS FIELDS (PHONE WITH PREFIXES OR CARD) -->
+                <!-- Phone input with Country prefix selector -->
+                <div class="form-group" id="phone-number-field" style="margin-bottom: 16px;">
+                    <label class="fx-field-label" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px;">4. Code Pays & Numéro de téléphone Mobile Money</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="cash-modal-country-prefix" class="custom-select" style="flex: 1.5; padding: 10px; border-radius: 8px; background: rgba(10, 15, 29, 0.95); color: var(--text-primary); border: 1px solid var(--border-color); font-size: 12px;">
+                            <option value="+237" selected>🇨🇲 CMR (+237)</option>
+                            <option value="+241">🇬🇦 GAB (+241)</option>
+                            <option value="+242">🇨🇬 COG (+242)</option>
+                            <option value="+235">🇹🇩 TCD (+235)</option>
+                            <option value="+236">🇨🇫 CAF (+236)</option>
+                            <option value="+240">🇬🇶 GNQ (+240)</option>
+                            <option value="+221">🇸🇳 SEN (+221)</option>
+                            <option value="+225">🇨🇮 CIV (+225)</option>
+                            <option value="+228">🇹🇬 TGO (+228)</option>
+                            <option value="+229">🇧🇯 BEN (+229)</option>
+                            <option value="+223">🇲🇱 MLI (+223)</option>
+                            <option value="+226">🇧🇫 BFA (+226)</option>
+                            <option value="+234">🇳🇬 NGA (+234)</option>
+                            <option value="+27">🇿🇦 ZAF (+27)</option>
+                            <option value="+254">🇰🇪 KEN (+254)</option>
+                            <option value="+1">🇺🇸 USA (+1)</option>
+                            <option value="+44">🇬🇧 GBR (+44)</option>
+                            <option value="+33">🇫🇷 FRA (+33)</option>
+                        </select>
+                        <input type="tel" id="cash-modal-phone" placeholder="67X XXX XXX" value="677890123" style="flex: 2.2; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff;">
                     </div>
                 </div>
 
-                <div class="form-group" id="card-form-field" style="display: none;">
-                    <label>Formulaire de Paiement Sécurisé (Stripe-MCP / Flutterwave-MCP)</label>
-                    <div style="display: flex; gap: 8px; margin-top: 4px;">
-                        <input type="text" class="custom-input" placeholder="Numéro de carte" style="flex: 2; padding: 10px; border-radius: 8px;">
-                        <input type="text" class="custom-input" placeholder="MM/AA" style="flex: 0.6; padding: 10px; border-radius: 8px;">
-                        <input type="text" class="custom-input" placeholder="CVV" style="flex: 0.6; padding: 10px; border-radius: 8px;">
+                <!-- Card payment details -->
+                <div class="form-group" id="card-form-field" style="display: none; margin-bottom: 16px;">
+                    <label class="fx-field-label" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px;">4. Formulaire de Paiement Sécurisé (Stripe-MCP / Flutterwave-MCP)</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <input type="text" class="custom-input" placeholder="Numéro de carte" style="padding: 10px; border-radius: 8px; width: 100%; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff;">
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" class="custom-input" placeholder="MM/AA" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; text-align: center;">
+                            <input type="text" class="custom-input" placeholder="CVV" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; text-align: center;">
+                        </div>
                     </div>
                 </div>
 
-                <!-- PIN verification -->
-                <div class="form-group" style="max-width: 200px; margin-bottom: 16px;">
-                    <label>Code PIN de transaction (4 chiffres)</label>
-                    <input type="password" id="cash-modal-pin" class="custom-input pin-input-centered" placeholder="••••" maxlength="4" value="0000" style="text-align: center; font-weight: bold; letter-spacing: 4px;">
+                <!-- STEP 5: SECURITY PIN -->
+                <div class="form-group" style="max-width: 220px; margin-bottom: 16px;">
+                    <label class="fx-field-label" style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px;">5. Code PIN de transaction (4 chiffres)</label>
+                    <input type="password" id="cash-modal-pin" class="custom-input pin-input-centered" placeholder="••••" maxlength="4" value="0000" style="text-align: center; font-weight: bold; letter-spacing: 4px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff;">
                 </div>
 
-                <div class="secure-checkout-notice">
+                <div class="secure-checkout-notice" style="margin-top: 16px;">
                     <i data-lucide="shield-check"></i>
                     <span>Toutes vos transactions sont cryptées et protégées par notre module de sécurité.</span>
                 </div>

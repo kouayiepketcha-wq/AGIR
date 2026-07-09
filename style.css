@@ -3169,3 +3169,51 @@ input:checked + .slider:before {
     height: 100%;
     object-fit: cover;
 }
+
+/* ==========================================================================
+   16. Exquisite FX Payment Card grid
+   ========================================================================== */
+.currency-flags-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.currency-flag-card {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px;
+    padding: 10px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.currency-flag-card:hover {
+    border-color: var(--primary-glow) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    transform: translateY(-1px);
+}
+
+.currency-flag-card.active {
+    background: rgba(212, 175, 55, 0.08) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.25) !important;
+}
+
+.currency-flag-card .flag-icon {
+    font-size: 24px;
+}
+
+.currency-flag-card .currency-tag {
+    color: var(--text-secondary);
+}
+
+.currency-flag-card.active .currency-tag {
+    color: var(--primary) !important;
+}
