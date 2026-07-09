@@ -3091,110 +3091,7 @@ input:checked + .slider:before {
     }
 }
 
-/* ==========================================================================
-   14. Phone Device Simulator & Layout Fit (Desktop Mockup)
-   ========================================================================== */
-@media (min-width: 1025px) {
-    body {
-        background: radial-gradient(circle at center, #0e1726 0%, #060a12 100%) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        min-height: 100vh !important;
-        overflow: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
 
-    .phone-device {
-        width: 395px;
-        height: 840px;
-        background: #060a12;
-        border: 12px solid #1a2333;
-        border-radius: 48px;
-        box-shadow: 0 35px 70px rgba(0, 0, 0, 0.8),
-                    0 0 0 2px rgba(255, 255, 255, 0.05),
-                    0 0 40px rgba(212, 175, 55, 0.15);
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Smartphone Notch */
-    .phone-device::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 150px;
-        height: 26px;
-        background: #1a2333;
-        border-bottom-left-radius: 18px;
-        border-bottom-right-radius: 18px;
-        z-index: 1000;
-    }
-
-    /* Smartphone Home Bar Indicator */
-    .phone-device::after {
-        content: '';
-        position: absolute;
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 130px;
-        height: 4px;
-        background: rgba(255, 255, 255, 0.25);
-        border-radius: 3px;
-        z-index: 1000;
-    }
-
-    .app-layout {
-        height: 100% !important;
-        grid-template-columns: 1fr !important;
-        overflow: hidden !important;
-    }
-
-    .sidebar {
-        display: none !important;
-    }
-
-    .mobile-bottom-nav {
-        display: flex !important;
-        position: absolute !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        background: rgba(10, 15, 29, 0.95) !important;
-    }
-
-    .main-workspace {
-        height: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-        overflow: hidden !important;
-    }
-
-    .view-viewport {
-        height: calc(100% - 150px) !important; /* space for header (80px) and bottom nav (70px) */
-        overflow-y: auto !important;
-        padding: 16px !important;
-        padding-bottom: 30px !important;
-    }
-
-    /* Style inner scrollbar to be modern and subtle */
-    .view-viewport::-webkit-scrollbar {
-        width: 3px !important;
-    }
-    .view-viewport::-webkit-scrollbar-track {
-        background: transparent !important;
-    }
-    .view-viewport::-webkit-scrollbar-thumb {
-        background: rgba(212, 175, 55, 0.15) !important;
-        border-radius: 2px !important;
-    }
-}
 
 /* ==========================================================================
    15. Inline Actions Inside Total Assets Card & Header Avatar
@@ -3204,6 +3101,13 @@ input:checked + .slider:before {
     gap: 12px;
     margin-top: 20px;
     width: 100%;
+}
+
+@media (max-width: 1280px) {
+    .card-action-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
 }
 
 .card-action-buttons button {

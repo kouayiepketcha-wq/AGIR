@@ -16,10 +16,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
-    <!-- Phone Mockup Device (centered on desktop, full-screen on mobile) -->
-    <div class="phone-device">
-        <!-- App Container -->
-        <div class="app-layout">
+    <!-- App Container -->
+    <div class="app-layout">
             
             <!-- Sidebar Navigation -->
             <aside class="sidebar">
@@ -117,7 +115,7 @@
 
                     <!-- Hero Stats Grid -->
                     <div class="stats-grid">
-                        <div class="stat-card glass-card col-span-2 total-assets-card">
+                        <div class="stat-card glass-card total-assets-card">
                             <div class="stat-header">
                                 <span>Total des Actifs</span>
                                 <div class="stat-icon-wrapper portfolio"><i data-lucide="wallet"></i></div>
@@ -158,6 +156,18 @@
                             <div class="stat-change neutral">
                                 <i data-lucide="refresh-cw"></i>
                                 <span>Disponible immédiatement</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card glass-card">
+                            <div class="stat-header">
+                                <span>Épargne & Plans PIP</span>
+                                <div class="stat-icon-wrapper savings-stat"><i data-lucide="repeat"></i></div>
+                            </div>
+                            <div class="stat-value" id="total-savings-value">850 000 FCFA</div>
+                            <div class="stat-change positive">
+                                <i data-lucide="percent"></i>
+                                <span>Taux moyen 7.2% A.N.</span>
                             </div>
                         </div>
                     </div>
@@ -785,7 +795,6 @@
             <span>Analyse IA</span>
         </a>
     </div>
-    </div> <!-- Closing phone-device -->
 
     <!-- MODAL 1: DEPOSIT / WITHDRAW MODAL -->
     <div class="modal-backdrop" id="cash-modal">
