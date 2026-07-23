@@ -16,8 +16,182 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
+    <!-- Authentication Overlay Screen (Multi-Step Wizard) -->
+    <div id="auth-screen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(135deg, #060913 0%, #0c1225 100%); z-index: 99999; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px 0;">
+        <div class="auth-card glass-card" style="width: 480px; max-width: 95vw; padding: 32px; border-radius: 24px; border: 1.5px solid rgba(212, 175, 55, 0.15); box-shadow: 0 25px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 18px; margin: auto;">
+            
+            <!-- Logo Header -->
+            <div style="text-align: center;">
+                <div class="logo-icon" style="margin: 0 auto 12px; width: 48px; height: 48px; background: var(--primary); color: var(--bg-main); font-size: 24px; font-weight: 800; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);">A</div>
+                <h2 id="auth-title" style="font-family: var(--font-heading); color: #fff; font-size: 22px; font-weight: 700; margin-bottom: 4px;">Bienvenue sur AGIR</h2>
+                <p id="auth-subtitle" style="color: var(--text-secondary); font-size: 12px;">Votre passerelle financière pour l'Afrique Centrale et le monde.</p>
+            </div>
+
+            <!-- Progress Steps Indicator (hidden on login) -->
+            <div id="auth-progress-bar" style="display: none; flex-direction: row; align-items: center; justify-content: center; gap: 6px; margin-bottom: 4px;">
+                <div class="auth-step-dot active" data-step="1" style="width: 10px; height: 10px; border-radius: 50%; background: var(--primary); transition: all 0.3s;"></div>
+                <div style="width: 28px; height: 2px; background: rgba(212,175,55,0.15); border-radius: 2px;" class="auth-step-line" data-after="1"></div>
+                <div class="auth-step-dot" data-step="2" style="width: 10px; height: 10px; border-radius: 50%; background: rgba(212,175,55,0.15); transition: all 0.3s;"></div>
+                <div style="width: 28px; height: 2px; background: rgba(212,175,55,0.15); border-radius: 2px;" class="auth-step-line" data-after="2"></div>
+                <div class="auth-step-dot" data-step="3" style="width: 10px; height: 10px; border-radius: 50%; background: rgba(212,175,55,0.15); transition: all 0.3s;"></div>
+            </div>
+
+            <!-- ========== LOGIN/REGISTER TAB SWITCHER ========== -->
+            <div id="auth-tabs-container">
+                <div class="segmented-control" style="margin-bottom: 8px;">
+                    <button class="segment-btn active" id="auth-tab-login">Connexion</button>
+                    <button class="segment-btn" id="auth-tab-register">Inscription</button>
+                </div>
+            </div>
+
+            <!-- ========== STEP 0: LOGIN FORM ========== -->
+            <div id="auth-login-form" style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="form-group">
+                    <label>Adresse Email</label>
+                    <input type="email" id="login-identifier" class="custom-input" placeholder="nom@exemple.com" value="compta.saunya@agir.cm">
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="login-password" class="custom-input" placeholder="••••••••" value="password123">
+                </div>
+                <button class="btn btn-primary btn-block" id="btn-auth-login" style="margin-top: 8px; padding: 12px; font-weight: 700;">
+                    <i data-lucide="log-in" style="width:16px;height:16px;margin-right:6px;"></i> Se Connecter
+                </button>
+            </div>
+
+            <!-- ========== STEP 1: REGISTRATION — Basic Info ========== -->
+            <div id="auth-register-step1" style="display: none; flex-direction: column; gap: 14px;">
+                <div class="form-group">
+                    <label>Type de compte</label>
+                    <select id="register-profile-type" class="custom-select" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(10, 15, 29, 0.95); color: #fff; border: 1px solid var(--border-color);">
+                        <option value="physique" selected>Personne Physique (Particulier)</option>
+                        <option value="morale">Personne Morale (Entreprise)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-register-name">Nom Complet</label>
+                    <input type="text" id="register-name" class="custom-input" placeholder="Ex: Saunya Compta">
+                </div>
+                <div class="form-group">
+                    <label>Adresse Email</label>
+                    <input type="email" id="register-email" class="custom-input" placeholder="nom@entreprise.com">
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="register-password" class="custom-input" placeholder="Minimum 8 caractères">
+                </div>
+                <div class="form-group">
+                    <label>Confirmation du mot de passe</label>
+                    <input type="password" id="register-password-confirm" class="custom-input" placeholder="Confirmez votre mot de passe">
+                </div>
+                <button class="btn btn-primary btn-block" id="btn-register-next-step2" style="margin-top: 8px; padding: 12px; font-weight: 700;">
+                    Continuer <i data-lucide="arrow-right" style="width:16px;height:16px;margin-left:6px;"></i>
+                </button>
+            </div>
+
+            <!-- ========== STEP 2: KYC Document Upload ========== -->
+            <div id="auth-register-step2" style="display: none; flex-direction: column; gap: 14px; max-height: 55vh; overflow-y: auto; padding-right: 4px;">
+                
+                <!-- Section title -->
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <i data-lucide="shield-check" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                    <h4 id="kyc-step-title" style="font-size: 13px; color: var(--primary-glow); margin: 0;">Vérification d'identité — Personne Physique</h4>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: -8px;">Téléversez vos documents pour activer votre compte. Les fichiers acceptés : JPG, PNG, PDF (max 5 Mo).</p>
+
+                <!-- ===== Personne Physique Documents ===== -->
+                <div id="kyc-docs-physique" style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="form-group">
+                        <label><i data-lucide="credit-card" style="width:13px;height:13px;"></i> Scan Passeport <em>OU</em> CNI Recto</label>
+                        <input type="file" id="kyc-cni-recto" class="custom-input" accept="image/*,.pdf" style="padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label><i data-lucide="credit-card" style="width:13px;height:13px;"></i> CNI Verso (si applicable)</label>
+                        <input type="file" id="kyc-cni-verso" class="custom-input" accept="image/*,.pdf" style="padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label><i data-lucide="map-pin" style="width:13px;height:13px;"></i> Plan de Localisation (Domicile)</label>
+                        <input type="file" id="kyc-plan-domicile" class="custom-input" accept="image/*,.pdf" style="padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label><i data-lucide="camera" style="width:13px;height:13px;"></i> Vérification par Selfie (Photo de votre visage)</label>
+                        <input type="file" id="kyc-selfie" class="custom-input" accept="image/*" capture="user" style="padding: 8px;">
+                    </div>
+                </div>
+
+                <!-- ===== Personne Morale Documents ===== -->
+                <div id="kyc-docs-morale" style="display: none; flex-direction: column; gap: 12px;">
+                    <div class="form-group">
+                        <label><i data-lucide="file-text" style="width:13px;height:13px;"></i> Statuts de l'Entreprise</label>
+                        <input type="file" id="kyc-statuts" class="custom-input" accept=".pdf,image/*" style="padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label><i data-lucide="file-text" style="width:13px;height:13px;"></i> Registre de Commerce (RCCM)</label>
+                        <input type="file" id="kyc-rccm" class="custom-input" accept=".pdf,image/*" style="padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label><i data-lucide="file-text" style="width:13px;height:13px;"></i> Attestation d'Immatriculation</label>
+                        <input type="file" id="kyc-attestation" class="custom-input" accept=".pdf,image/*" style="padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label><i data-lucide="file-text" style="width:13px;height:13px;"></i> Document de Non Redevance</label>
+                        <input type="file" id="kyc-non-redevance" class="custom-input" accept=".pdf,image/*" style="padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label><i data-lucide="map-pin" style="width:13px;height:13px;"></i> Plan de Localisation (Entreprise)</label>
+                        <input type="file" id="kyc-plan-entreprise" class="custom-input" accept="image/*,.pdf" style="padding: 8px;">
+                    </div>
+                </div>
+
+                <!-- Common fields for both profile types -->
+                <hr style="border-color: rgba(212,175,55,0.1); margin: 6px 0;">
+                <div class="form-group">
+                    <label><i data-lucide="phone" style="width:13px;height:13px;"></i> Numéro de Téléphone</label>
+                    <input type="tel" id="kyc-phone" class="custom-input" placeholder="Ex: +237 677 89 01 23">
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="landmark" style="width:13px;height:13px;"></i> Numéro de Compte Bancaire</label>
+                    <input type="text" id="kyc-bank-account" class="custom-input" placeholder="Ex: CM21 10005 00003 0123456789 53">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 8px;">
+                    <button class="btn btn-outline-primary" id="btn-kyc-back-step1" style="flex: 0 0 auto; padding: 10px 16px; border-radius: 10px;">
+                        <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Retour
+                    </button>
+                    <button class="btn btn-primary btn-block" id="btn-kyc-submit" style="flex: 1; padding: 12px; font-weight: 700;">
+                        <i data-lucide="send" style="width:14px;height:14px;margin-right:6px;"></i> Soumettre pour vérification
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========== STEP 3: KYC Pending Verification Screen ========== -->
+            <div id="auth-register-step3" style="display: none; flex-direction: column; gap: 16px; align-items: center; text-align: center; padding: 12px 0;">
+                <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(212, 175, 55, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; animation: pulse 2s ease-in-out infinite;">
+                    <i data-lucide="clock" style="width: 36px; height: 36px; color: var(--primary);"></i>
+                </div>
+                <h3 style="color: #fff; font-size: 18px; font-weight: 700; margin: 0;">Documents soumis avec succès !</h3>
+                <p style="color: var(--text-secondary); font-size: 12px; line-height: 1.6; max-width: 380px;">
+                    Votre dossier est en cours de vérification par notre équipe de conformité COSUMAF. 
+                    <br><br>
+                    <strong style="color: var(--primary);">⏱ Délai estimé : 24 heures</strong>
+                    <br><br>
+                    Vous recevrez un <strong>email de confirmation</strong> une fois la vérification terminée. 
+                    En attendant, vous pouvez explorer l'application, consulter le marché et découvrir les fonctionnalités — mais les transactions restent bloquées jusqu'à validation.
+                </p>
+                <button class="btn btn-primary btn-block" id="btn-enter-app-pending" style="padding: 12px; font-weight: 700; max-width: 320px;">
+                    <i data-lucide="layout-dashboard" style="width:16px;height:16px;margin-right:6px;"></i> Explorer l'application
+                </button>
+            </div>
+
+            <!-- Footer -->
+            <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                Protégé par cryptage de sécurité militaire COSUMAF Shield.
+            </div>
+        </div>
+    </div>
+
     <!-- App Container -->
-    <div class="app-layout">
+    <div class="app-layout" style="display: none;">
             
             <!-- Sidebar Navigation -->
             <aside class="sidebar">
@@ -30,25 +204,22 @@
                     </div>
                 </div>
 
-                <div class="sidebar-user-card" id="trigger-profile-card">
-                    <div class="user-avatar">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80" alt="Avatar">
-                        <div class="avatar-status-badge secure"></div>
-                    </div>
-                    <div class="user-info">
-                        <span class="user-name">Saunya Compta</span>
-                        <span class="subscription-badge free" id="sub-badge-sidebar">Compte Standard</span>
-                    </div>
-                </div>
-
                 <nav class="sidebar-nav">
                     <a href="#" class="nav-item active" data-target="dashboard">
-                        <i data-lucide="layout-dashboard"></i>
-                        <span>Tableau de Bord</span>
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="portfolio">
+                        <i data-lucide="briefcase"></i>
+                        <span>Portefeuille</span>
                     </a>
                     <a href="#" class="nav-item" data-target="market">
                         <i data-lucide="trending-up"></i>
                         <span>Marché Financier</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="banking">
+                        <i data-lucide="landmark"></i>
+                        <span>Ma Banque</span>
                     </a>
                     <a href="#" class="nav-item pro-feature" data-target="ai-analyst">
                         <i data-lucide="cpu"></i>
@@ -61,9 +232,17 @@
                     <div class="sidebar-balance-widget">
                         <span class="widget-title">Liquidités XAF</span>
                         <div class="widget-value" id="sidebar-balance">1 250 000 FCFA</div>
-                        <button class="btn btn-sm btn-outline-primary btn-block btn-deposit-trigger">
-                            <i data-lucide="plus-circle"></i> Déposer
-                        </button>
+                        <div style="display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap;">
+                            <button class="btn btn-sm btn-outline-primary btn-deposit-trigger" style="flex: 1; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 6px;">
+                                <i data-lucide="plus-circle" style="width: 12px; height: 12px; margin-right: 2px;"></i> Déposer
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary btn-withdraw-trigger" style="flex: 1; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 6px; border-color: var(--secondary-glow); color: var(--secondary-glow);">
+                                <i data-lucide="arrow-up-right" style="width: 12px; height: 12px; margin-right: 2px;"></i> Retrait
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary btn-block btn-goto-market" id="btn-sidebar-invest-shortcut" style="width: 100%; margin-top: 4px; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 6px; border-color: var(--primary); color: var(--primary);">
+                                <i data-lucide="trending-up" style="width: 12px; height: 12px; margin-right: 2px;"></i> Investir
+                            </button>
+                        </div>
                     </div>
                     <div class="security-stamp">
                         <i data-lucide="lock"></i>
@@ -84,6 +263,20 @@
                     </div>
                 </div>
                 <div class="header-right">
+                    <!-- Language Switcher -->
+                    <div class="header-lang-switcher" id="lang-switcher" style="position: relative;">
+                        <button id="btn-lang-toggle" style="display: flex; align-items: center; gap: 5px; background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.15); border-radius: 8px; padding: 6px 10px; cursor: pointer; color: var(--text-secondary); font-size: 12px; font-weight: 600; transition: all 0.2s ease;">
+                            <i data-lucide="globe" style="width: 14px; height: 14px; color: var(--primary);"></i>
+                            <span id="current-lang-label">FR</span>
+                            <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i>
+                        </button>
+                        <div id="lang-dropdown" style="display: none; position: absolute; top: 110%; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; min-width: 150px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; overflow: hidden;">
+                            <button class="lang-option active" data-lang="fr" style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; border: none; background: none; color: var(--text-primary); cursor: pointer; font-size: 12px; text-align: left; transition: background 0.15s;">🇫🇷 Français</button>
+                            <button class="lang-option" data-lang="en" style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; border: none; background: none; color: var(--text-primary); cursor: pointer; font-size: 12px; text-align: left; transition: background 0.15s;">🇬🇧 English</button>
+                            <button class="lang-option" data-lang="es" style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; border: none; background: none; color: var(--text-primary); cursor: pointer; font-size: 12px; text-align: left; transition: background 0.15s;">🇪🇸 Español</button>
+                        </div>
+                    </div>
+
                     <div class="security-status-indicator secure">
                         <i data-lucide="shield"></i>
                         <span class="desktop-only">AGIR Shield Actif</span>
@@ -103,104 +296,84 @@
             <!-- Dashboard Content Container (Views) -->
             <div class="view-viewport">
 
-                <!-- 1. Tableau de Bord View -->
+                <!-- 1. Accueil View -->
                 <section id="view-dashboard" class="view-pane active">
                     <div class="welcome-header">
                         <div class="welcome-text">
                             <h2>Bonjour, Saunya</h2>
-                            <p>Voici la situation de votre portefeuille pour l'Afrique Centrale.</p>
+                            <p>Bienvenue sur AGIR — votre passerelle d'investissement pour l'Afrique Centrale.</p>
                         </div>
                         <div class="current-date" id="live-date">8 Juillet 2026</div>
                     </div>
 
-                    <!-- Hero Stats Grid -->
-                    <div class="stats-grid">
-                        <div class="stat-card glass-card total-assets-card">
-                            <div class="stat-header">
-                                <span>Total des Actifs</span>
-                                <div class="stat-icon-wrapper portfolio"><i data-lucide="wallet"></i></div>
+                    <!-- Information / Promotion Banner -->
+                    <div class="glass-card" style="margin-bottom: 16px; padding: 0; overflow: hidden; border: 1px solid rgba(212,175,55,0.15);">
+                        <div style="display: flex; align-items: stretch; min-height: 140px;">
+                            <div style="flex: 1; padding: 22px 28px; display: flex; flex-direction: column; justify-content: center;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <span style="background: var(--primary); color: var(--bg-main); font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Nouveau</span>
+                                    <span style="font-size: 10px; color: var(--text-muted);">Juillet 2026</span>
+                                </div>
+                                <h3 style="color: #fff; font-size: 17px; font-weight: 700; margin: 0 0 6px; line-height: 1.3;">Emprunt obligataire ECMR 6.25% — Souscription ouverte</h3>
+                                <p style="color: var(--text-secondary); font-size: 12px; line-height: 1.5; margin: 0 0 12px;">L'État du Cameroun lance un nouvel emprunt à taux fixe sur la BVMAC. Rendement garanti de 6.25% par an sur 5 ans. Souscription sans frais via AGIR.</p>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-sm btn-primary" onclick="if(window.routeToTarget) routeToTarget('market')" style="padding: 8px 16px; font-size: 11px; border-radius: 8px; font-weight: 700;"><i data-lucide="arrow-right" style="width:12px;height:12px;margin-right:4px;"></i>Souscrire maintenant</button>
+                                    <button class="btn btn-sm btn-outline-primary" style="padding: 8px 16px; font-size: 11px; border-radius: 8px;">En savoir plus</button>
+                                </div>
                             </div>
-                            <div class="stat-value" id="portfolio-value">4 850 000 FCFA</div>
-                            <div class="stat-change positive">
-                                <i data-lucide="arrow-up-right"></i>
-                                <span>+12.4% ce mois</span>
-                            </div>
-                            <div class="card-action-buttons">
-                                <button class="btn btn-primary btn-deposit-trigger">
-                                    <i data-lucide="download"></i> <span>Déposer</span>
-                                </button>
-                                <button class="btn btn-secondary btn-withdraw-trigger">
-                                    <i data-lucide="upload"></i> <span>Retirer</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="stat-card glass-card" id="dashboard-market-redirect-card" style="cursor:pointer;">
-                            <div class="stat-header">
-                                <span>Portefeuille Investi</span>
-                                <div class="stat-icon-wrapper portfolio"><i data-lucide="briefcase"></i></div>
-                            </div>
-                            <div class="stat-value" id="dashboard-invested-value">3 600 000 FCFA</div>
-                            <div class="stat-change positive">
-                                <i data-lucide="arrow-up-right"></i>
-                                <span>Actions & Fonds</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card glass-card">
-                            <div class="stat-header">
-                                <span>Liquidités XAF</span>
-                                <div class="stat-icon-wrapper cash"><i data-lucide="dollar-sign"></i></div>
-                            </div>
-                            <div class="stat-value" id="cash-value">1 250 000 FCFA</div>
-                            <div class="stat-change neutral">
-                                <i data-lucide="refresh-cw"></i>
-                                <span>Disponible immédiatement</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card glass-card">
-                            <div class="stat-header">
-                                <span>Épargne & Plans PIP</span>
-                                <div class="stat-icon-wrapper savings-stat"><i data-lucide="repeat"></i></div>
-                            </div>
-                            <div class="stat-value" id="total-savings-value">850 000 FCFA</div>
-                            <div class="stat-change positive">
-                                <i data-lucide="percent"></i>
-                                <span>Taux moyen 7.2% A.N.</span>
+                            <div style="width: 220px; background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0.02) 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 48px; font-weight: 800; color: var(--primary); line-height: 1;">6.25<span style="font-size: 20px;">%</span></div>
+                                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Rendement annuel garanti</div>
+                                    <div style="font-size: 10px; color: var(--primary); font-weight: 600; margin-top: 2px;">Durée : 5 ans</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Main Dashboard Section (Charts + Table) -->
-                    <div class="dashboard-grid">
-                        <!-- Portofolio Chart -->
-                        <div class="grid-item glass-card col-span-2">
-                            <div class="card-title-bar">
-                                <h3>Évolution de vos Actifs</h3>
-                                <div class="chart-filters">
-                                    <button class="btn-filter active" data-period="1M">1M</button>
-                                    <button class="btn-filter" data-period="6M">6M</button>
-                                    <button class="btn-filter" data-period="1A">1A</button>
-                                </div>
+                    <!-- Quick Access Shortcuts Grid -->
+                    <div class="glass-card" style="margin-bottom: 16px;">
+                        <div class="card-title-bar">
+                            <h3><i data-lucide="zap" style="width: 16px; height: 16px; margin-right: 6px;"></i>Accès rapide</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px;">
+                            <div class="shortcut-tile" onclick="if(window.navigateToMarketCategory) navigateToMarketCategory('actions')" style="background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="bar-chart-3" style="width: 24px; height: 24px; color: var(--primary); margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">Actions</div>
                             </div>
-                            <div class="chart-container">
-                                <canvas id="portfolioChart"></canvas>
+                            <div class="shortcut-tile" onclick="if(window.navigateToMarketCategory) navigateToMarketCategory('obligations')" style="background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="landmark" style="width: 24px; height: 24px; color: #3b82f6; margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">Obligations</div>
+                            </div>
+                            <div class="shortcut-tile" onclick="if(window.navigateToMarketCategory) navigateToMarketCategory('fcp')" style="background: rgba(0,200,83,0.05); border: 1px solid rgba(0,200,83,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="pie-chart" style="width: 24px; height: 24px; color: var(--success); margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">Fonds gérés</div>
+                            </div>
+                            <div class="shortcut-tile" onclick="if(window.routeToTarget) routeToTarget('savings')" style="background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="piggy-bank" style="width: 24px; height: 24px; color: #a855f7; margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">Plans PIP</div>
+                            </div>
+                            <div class="shortcut-tile" style="background: rgba(249,115,22,0.05); border: 1px solid rgba(249,115,22,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="graduation-cap" style="width: 24px; height: 24px; color: #f97316; margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">AGIR Académie</div>
+                            </div>
+                            <div class="shortcut-tile" style="background: rgba(236,72,153,0.05); border: 1px solid rgba(236,72,153,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="calculator" style="width: 24px; height: 24px; color: #ec4899; margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">Simulateur</div>
+                            </div>
+                            <div class="shortcut-tile" onclick="if(window.routeToTarget) routeToTarget('banking')" style="background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="credit-card" style="width: 24px; height: 24px; color: #0ea5e9; margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">Ma carte Visa</div>
+                            </div>
+                            <div class="shortcut-tile" onclick="if(window.routeToTarget) routeToTarget('notifications')" style="background: rgba(99,102,241,0.05); border: 1px solid rgba(99,102,241,0.1); border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="newspaper" style="width: 24px; height: 24px; color: #6366f1; margin-bottom: 6px;"></i>
+                                <div style="font-size: 11px; color: #fff; font-weight: 600;">Actualités</div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Asset Allocation -->
-                        <div class="grid-item glass-card">
-                            <div class="card-title-bar">
-                                <h3>Allocation des fonds</h3>
-                            </div>
-                            <div class="chart-container-donut">
-                                <canvas id="allocationChart"></canvas>
-                            </div>
-                            <div class="allocation-legend" id="allocation-legend-list">
-                                <!-- Generated Dynamically -->
-                            </div>
-                        </div>
+                    <!-- Main Dashboard Section (Table Only) -->
+                    <div class="dashboard-grid">
 
                         <!-- Top Stocks Market Overview -->
                         <div class="grid-item glass-card col-span-2">
@@ -234,6 +407,294 @@
                             </div>
                             <div class="transaction-list" id="dashboard-transactions-list">
                                 <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 1.5. Portefeuille View -->
+                <section id="view-portfolio" class="view-pane">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Mon Portefeuille d'Investissement</h2>
+                            <p>Consultez l'évolution, l'allocation et le détail de vos positions détenues sur la bourse BVMAC.</p>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Stats Grid (Moved from Accueil) -->
+                    <div class="stats-grid" style="margin-bottom: 16px;">
+                        <div class="stat-card glass-card total-assets-card">
+                            <div class="stat-header">
+                                <span>Total des actifs</span>
+                                <div class="stat-icon-wrapper portfolio"><i data-lucide="wallet"></i></div>
+                            </div>
+                            <div class="stat-value" id="portfolio-value">4 850 000 FCFA</div>
+                            <div class="stat-change positive">
+                                <i data-lucide="arrow-up-right"></i>
+                                <span>+12,4 % ce mois</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card glass-card" id="dashboard-market-redirect-card" style="cursor:pointer;">
+                            <div class="stat-header">
+                                <span>Portefeuille investi</span>
+                                <div class="stat-icon-wrapper portfolio"><i data-lucide="briefcase"></i></div>
+                            </div>
+                            <div class="stat-value" id="dashboard-invested-value">3 600 000 FCFA</div>
+                            <div class="stat-change positive">
+                                <i data-lucide="arrow-up-right"></i>
+                                <span>Actions &amp; Fonds</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card glass-card">
+                            <div class="stat-header">
+                                <span>Liquidités XAF</span>
+                                <div class="stat-icon-wrapper cash"><i data-lucide="dollar-sign"></i></div>
+                            </div>
+                            <div class="stat-value" id="cash-value">1 250 000 FCFA</div>
+                            <div class="stat-change neutral">
+                                <i data-lucide="refresh-cw"></i>
+                                <span>Disponible immédiatement</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card glass-card">
+                            <div class="stat-header">
+                                <span>Épargne &amp; Plans PIP</span>
+                                <div class="stat-icon-wrapper savings-stat"><i data-lucide="repeat"></i></div>
+                            </div>
+                            <div class="stat-value" id="total-savings-value">850 000 FCFA</div>
+                            <div class="stat-change positive">
+                                <i data-lucide="percent"></i>
+                                <span>Taux moyen 7,2 % par an</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Charts Grid (Moved from Dashboard) -->
+                    <div class="dashboard-grid" style="margin-bottom: 16px;">
+                        <!-- Portfolio Evolution Chart -->
+                        <div class="grid-item glass-card col-span-2">
+                            <div class="card-title-bar">
+                                <h3>Évolution de vos Actifs</h3>
+                                <div class="chart-filters">
+                                    <button class="btn-filter active" data-period="1M">1M</button>
+                                    <button class="btn-filter" data-period="6M">6M</button>
+                                    <button class="btn-filter" data-period="1A">1A</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="portfolioChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Asset Allocation -->
+                        <div class="grid-item glass-card">
+                            <div class="card-title-bar">
+                                <h3>Allocation des fonds</h3>
+                            </div>
+                            <div class="chart-container-donut">
+                                <canvas id="allocationChart"></canvas>
+                            </div>
+                            <div class="allocation-legend" id="allocation-legend-list">
+                                <!-- Generated Dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Holdings Table -->
+                    <div class="glass-card">
+                        <div class="card-title-bar">
+                            <h3>Actifs en possession</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actif</th>
+                                        <th>Secteur / Catégorie</th>
+                                        <th>Quantité détenue</th>
+                                        <th>Prix de revient moyen (PRM)</th>
+                                        <th>Dernier Cours</th>
+                                        <th>Valeur actuelle</th>
+                                        <th>Performance latente</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="portfolio-holdings-table">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 1.7. Ma Banque (Virtual Banking Hub) -->
+                <section id="view-banking" class="view-pane">
+                    <div class="welcome-header">
+                        <div class="welcome-text">
+                            <h2>Ma Banque</h2>
+                            <p>Accédez à un écosystème financier complet : cartes virtuelles, services bancaires, partenaires institutionnels et produits financiers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Virtual Cards Section -->
+                    <div class="glass-card" style="margin-bottom: 16px;">
+                        <div class="card-title-bar">
+                            <h3><i data-lucide="credit-card" style="width: 16px; height: 16px; margin-right: 6px;"></i> Mes Cartes</h3>
+                            <button class="btn btn-sm btn-primary" id="btn-request-card" style="padding: 6px 14px; font-size: 11px; border-radius: 8px;">
+                                <i data-lucide="plus" style="width: 12px; height: 12px; margin-right: 4px;"></i> Demander une carte
+                            </button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 12px;">
+                            <!-- Virtual Visa Card -->
+                            <div class="virtual-card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 16px; padding: 24px; position: relative; overflow: hidden; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(212,175,55,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+                                <div style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(212,175,55,0.08), transparent 70%); border-radius: 50%;"></div>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <div style="font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1.5px;">Carte Virtuelle</div>
+                                        <div style="font-size: 14px; color: #fff; font-weight: 700; margin-top: 2px;">AGIR Visa Gold</div>
+                                    </div>
+                                    <div style="font-size: 22px; font-weight: 800; color: var(--primary); font-style: italic;">VISA</div>
+                                </div>
+                                <div style="margin: 16px 0;">
+                                    <div style="font-size: 18px; color: #fff; font-family: 'Courier New', monospace; letter-spacing: 3px; font-weight: 500;">•••• •••• •••• 4829</div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                                    <div>
+                                        <div style="font-size: 9px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Titulaire</div>
+                                        <div style="font-size: 12px; color: #fff; font-weight: 600;" id="card-holder-name">SAUNYA COMPTA</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 9px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Expire</div>
+                                        <div style="font-size: 12px; color: #fff; font-weight: 600;">12/29</div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span style="font-size: 10px; color: var(--success); font-weight: 700; background: rgba(0,200,83,0.1); padding: 3px 8px; border-radius: 4px;">● Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Actions Panel -->
+                            <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <button class="btn btn-outline-primary" style="padding: 14px; border-radius: 12px; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-color: rgba(212,175,55,0.2); color: var(--text-secondary);">
+                                        <i data-lucide="eye" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                                        Voir les détails
+                                    </button>
+                                    <button class="btn btn-outline-primary" style="padding: 14px; border-radius: 12px; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-color: rgba(212,175,55,0.2); color: var(--text-secondary);">
+                                        <i data-lucide="pause-circle" style="width: 18px; height: 18px; color: var(--warning);"></i>
+                                        Bloquer la carte
+                                    </button>
+                                    <button class="btn btn-outline-primary" style="padding: 14px; border-radius: 12px; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-color: rgba(212,175,55,0.2); color: var(--text-secondary);">
+                                        <i data-lucide="settings" style="width: 18px; height: 18px; color: var(--text-muted);"></i>
+                                        Plafonds
+                                    </button>
+                                    <button class="btn btn-outline-primary" style="padding: 14px; border-radius: 12px; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-color: rgba(212,175,55,0.2); color: var(--text-secondary);">
+                                        <i data-lucide="refresh-cw" style="width: 18px; height: 18px; color: var(--info);"></i>
+                                        Renouveler
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Bancaires Grid -->
+                    <div class="glass-card" style="margin-bottom: 16px;">
+                        <div class="card-title-bar">
+                            <h3><i data-lucide="grid-3x3" style="width: 16px; height: 16px; margin-right: 6px;"></i> Services Bancaires</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 12px;">
+                            <div class="banking-service-tile" style="background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.1); border-radius: 14px; padding: 20px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="send" style="width: 28px; height: 28px; color: var(--primary); margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; color: #fff; font-weight: 600;">Virement</div>
+                                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">CEMAC & International</div>
+                            </div>
+                            <div class="banking-service-tile" style="background: rgba(0,200,83,0.05); border: 1px solid rgba(0,200,83,0.1); border-radius: 14px; padding: 20px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="smartphone" style="width: 28px; height: 28px; color: var(--success); margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; color: #fff; font-weight: 600;">Mobile Money</div>
+                                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">MTN, Orange, etc.</div>
+                            </div>
+                            <div class="banking-service-tile" style="background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.1); border-radius: 14px; padding: 20px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="qr-code" style="width: 28px; height: 28px; color: #3b82f6; margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; color: #fff; font-weight: 600;">Paiement QR</div>
+                                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Scanner & Payer</div>
+                            </div>
+                            <div class="banking-service-tile" style="background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.1); border-radius: 14px; padding: 20px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="receipt" style="width: 28px; height: 28px; color: #a855f7; margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; color: #fff; font-weight: 600;">Factures</div>
+                                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Eau, Élec, Internet</div>
+                            </div>
+                            <div class="banking-service-tile" style="background: rgba(249,115,22,0.05); border: 1px solid rgba(249,115,22,0.1); border-radius: 14px; padding: 20px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="repeat" style="width: 28px; height: 28px; color: #f97316; margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; color: #fff; font-weight: 600;">Change</div>
+                                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Forex XAF / EUR / USD</div>
+                            </div>
+                            <div class="banking-service-tile" style="background: rgba(236,72,153,0.05); border: 1px solid rgba(236,72,153,0.1); border-radius: 14px; padding: 20px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                <i data-lucide="piggy-bank" style="width: 28px; height: 28px; color: #ec4899; margin-bottom: 8px;"></i>
+                                <div style="font-size: 12px; color: #fff; font-weight: 600;">Micro-crédit</div>
+                                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Demande en ligne</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Partenaires Financiers Hub -->
+                    <div class="glass-card">
+                        <div class="card-title-bar">
+                            <h3><i data-lucide="building-2" style="width: 16px; height: 16px; margin-right: 6px;"></i> Hub d'Institutions Financières</h3>
+                        </div>
+                        <p style="font-size: 11px; color: var(--text-muted); margin-top: -4px; margin-bottom: 14px;">Nos partenaires bancaires et financiers en Afrique Centrale</p>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+                            <!-- Partner 1: Afriland First Bank -->
+                            <div class="partner-card" style="background: rgba(10,15,29,0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s ease;">
+                                <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #003366, #006699); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #fff; flex-shrink: 0;">AF</div>
+                                <div>
+                                    <div style="font-size: 13px; color: #fff; font-weight: 600;">Afriland First Bank</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">🇨🇲 Cameroun • Épargne, Crédit</div>
+                                </div>
+                            </div>
+                            <!-- Partner 2: BICEC -->
+                            <div class="partner-card" style="background: rgba(10,15,29,0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s ease;">
+                                <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #c62828, #e53935); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;">BI</div>
+                                <div>
+                                    <div style="font-size: 13px; color: #fff; font-weight: 600;">BICEC (BPCE)</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">🇨🇲 Cameroun • Compte courant</div>
+                                </div>
+                            </div>
+                            <!-- Partner 3: UBA -->
+                            <div class="partner-card" style="background: rgba(10,15,29,0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s ease;">
+                                <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #b71c1c, #f44336); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;">UBA</div>
+                                <div>
+                                    <div style="font-size: 13px; color: #fff; font-weight: 600;">United Bank for Africa</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">🇨🇲🇬🇦🇨🇬 CEMAC • Pan-Africain</div>
+                                </div>
+                            </div>
+                            <!-- Partner 4: Ecobank -->
+                            <div class="partner-card" style="background: rgba(10,15,29,0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s ease;">
+                                <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #0d47a1, #1565c0); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;">ECO</div>
+                                <div>
+                                    <div style="font-size: 13px; color: #fff; font-weight: 600;">Ecobank</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">🇨🇲🇹🇩🇬🇶 CEMAC • Digital Banking</div>
+                                </div>
+                            </div>
+                            <!-- Partner 5: BGFI Bank -->
+                            <div class="partner-card" style="background: rgba(10,15,29,0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s ease;">
+                                <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #1b5e20, #388e3c); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;">BGF</div>
+                                <div>
+                                    <div style="font-size: 13px; color: #fff; font-weight: 600;">BGFI Bank</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">🇬🇦🇨🇬🇨🇲 Gabon • Wealth Management</div>
+                                </div>
+                            </div>
+                            <!-- Partner 6: SCB Cameroun -->
+                            <div class="partner-card" style="background: rgba(10,15,29,0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s ease;">
+                                <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #ff6f00, #ff9800); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;">SCB</div>
+                                <div>
+                                    <div style="font-size: 13px; color: #fff; font-weight: 600;">SCB Cameroun</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">🇨🇲 Cameroun • Crédit Immobilier</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -573,8 +1034,8 @@
                             
                             <div class="profile-info-fields">
                                 <div class="info-field-group">
-                                    <span class="info-field-label">Nom Complet</span>
-                                    <span class="info-field-val">Saunya Compta</span>
+                                    <span class="info-field-label" id="profile-name-label">Nom Complet</span>
+                                    <span class="info-field-val" id="profile-full-name">Saunya Compta</span>
                                 </div>
                                 <div class="info-field-group">
                                     <span class="info-field-label">Niveau de Compte</span>
@@ -582,19 +1043,57 @@
                                 </div>
                                 <div class="info-field-group">
                                     <span class="info-field-label">Numéro de Téléphone</span>
-                                    <span class="info-field-val">+237 677 89 01 23 (MTN MoMo)</span>
+                                    <span class="info-field-val" id="profile-phone">+237 677 89 01 23 (MTN MoMo)</span>
                                 </div>
                                 <div class="info-field-group">
                                     <span class="info-field-label">Adresse Email</span>
-                                    <span class="info-field-val">compta.saunya@agir.cm</span>
+                                    <span class="info-field-val" id="profile-email">compta.saunya@agir.cm</span>
                                 </div>
                                 <div class="info-field-group">
-                                    <span class="info-field-label">Identité KYC</span>
-                                    <span class="info-field-val text-emerald"><i data-lucide="shield-check" class="icon-inline"></i> CNI Validée (Cameroun)</span>
+                                    <span class="info-field-label">Identité KYC (COBAC)</span>
+                                    <span class="info-field-val" id="profile-kyc-status-container">
+                                        <span class="kyc-badge unverified" id="profile-kyc-badge" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i data-lucide="shield-alert" style="width: 12px; height: 12px;"></i> Non Vérifié
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="info-field-group" id="profile-group-cni">
+                                    <span class="info-field-label">N° de CNI / Passeport</span>
+                                    <span class="info-field-val" id="profile-doc-cni">Non fourni</span>
+                                </div>
+                                <!-- Corporate only fields -->
+                                <div id="profile-corporate-section" style="display: none; flex-direction: column; gap: 16px;">
+                                    <div class="info-field-group">
+                                        <span class="info-field-label">Registre du Commerce (RCCM)</span>
+                                        <span class="info-field-val" id="profile-doc-rccm">Non fourni</span>
+                                    </div>
+                                    <div class="info-field-group">
+                                        <span class="info-field-label">Statuts de l'Entreprise</span>
+                                        <span class="info-field-val" id="profile-doc-statuts">Non fourni</span>
+                                    </div>
+                                    <div class="info-field-group">
+                                        <span class="info-field-label">Plan de Localisation</span>
+                                        <span class="info-field-val" id="profile-doc-plan">Non fourni</span>
+                                    </div>
                                 </div>
                                 <div class="info-field-group">
                                     <span class="info-field-label">Banque Liée RIB (BVMAC)</span>
                                     <span class="info-field-val font-mono">CM21 10005 00012 345678901 23 Afriland</span>
+                                </div>
+                            </div>
+                            
+                            <!-- KYC Document Upload box -->
+                            <div class="kyc-upload-section" id="kyc-upload-panel" style="margin-top: 20px; background: rgba(255,255,255,0.02); border: 1.5px dashed var(--border-color); border-radius: 12px; padding: 16px; text-align: center;">
+                                <h4 style="margin-bottom: 6px; font-size: 13px; color: #fff;" id="kyc-panel-title"><i data-lucide="upload-cloud"></i> Soumettre vos pièces d'identité (KYC)</h4>
+                                <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;" id="kyc-panel-desc">Requis par la réglementation COBAC/LCB-FT avant tout dépôt.</p>
+                                <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;" id="kyc-upload-inputs-container">
+                                    <input type="text" id="kyc-doc-name" placeholder="Numéro de pièce (ex: CNI N°1290382)" style="width: 100%; max-width: 240px; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-size: 12px; text-align: center; outline: none;">
+                                    <button class="btn btn-outline-primary btn-sm" id="btn-submit-kyc-docs">
+                                        <i data-lucide="check"></i> Soumettre la pièce justificative
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" id="btn-approve-kyc-simulation" style="margin-top: 6px; border-color: #10b981 !important; color: #10b981 !important; background: transparent; padding: 6px 12px; font-size: 11px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                        <i data-lucide="shield-check" style="width: 12px; height: 12px;"></i> (Simulateur) Valider le KYC admin
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1001,8 +1500,14 @@
                     </div>
 
                     <div class="form-group margin-top-lg">
-                        <label id="trade-qty-label">Nombre d'unités</label>
-                        <input type="number" id="trade-quantity" value="10" min="1">
+                        <label id="trade-amount-label">Montant souhaité à investir (FCFA)</label>
+                        <input type="number" id="trade-amount-input" value="480000" min="1" placeholder="Entrez le montant à investir">
+                        <span class="input-tip" style="font-size: 10px; color: var(--primary); margin-top: 4px; display: block;">Démocratisation des actifs : Achat de fractions d'actions activé.</span>
+                    </div>
+
+                    <div class="form-group margin-top-md">
+                        <label id="trade-qty-label">Nombre d'unités (calculé)</label>
+                        <input type="number" id="trade-quantity" value="10" step="0.0001" min="0.0001" style="background: rgba(255,255,255,0.03); color: var(--text-secondary);">
                     </div>
 
                     <!-- Devise de Règlement (FX) -->
@@ -1050,6 +1555,91 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary btn-close-modal">Annuler</button>
                 <button class="btn btn-primary" id="btn-submit-trade">Confirmer l'ordre</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: FUND DETAILS MODAL -->
+    <div class="modal-backdrop" id="fund-details-modal">
+        <div class="modal-container glass-card" style="width: 540px;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(0,74,173,0.2); padding-bottom: 14px;">
+                <div>
+                    <h3 id="fund-modal-name" style="color: #E6FFFA; font-size: 20px; margin: 0;">AGIR Flex</h3>
+                    <p id="fund-modal-tagline" style="color: #3b82f6; font-size: 12px; margin: 4px 0 0; font-weight: 500;">L'épargne libre et disponible 24 h/24</p>
+                </div>
+                <button class="btn-close-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="gap: 16px;">
+
+                <!-- À quoi sert votre argent -->
+                <div>
+                    <h4 style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #3b82f6; margin: 0 0 6px;">À quoi sert votre argent ?</h4>
+                    <p id="fund-modal-usecase" style="color: #e2e8f0; background: rgba(0,74,173,0.08); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(0,74,173,0.15); font-size: 12px; line-height: 1.6; margin: 0;"></p>
+                    <p id="fund-modal-description" style="color: var(--text-muted); font-size: 11px; font-style: italic; margin: 6px 0 0;"></p>
+                </div>
+
+                <!-- Performance Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: rgba(0,74,173,0.06); border: 1px solid rgba(0,74,173,0.12); padding: 14px; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="trending-up" style="width: 22px; height: 22px; color: #004AAD; flex-shrink: 0;"></i>
+                        <div>
+                            <div style="font-size: 10px; color: #93c5fd;">Rémunération nette</div>
+                            <div id="fund-modal-return" style="font-size: 14px; font-weight: 700; color: #E6FFFA;"></div>
+                        </div>
+                    </div>
+                    <div style="background: rgba(0,74,173,0.06); border: 1px solid rgba(0,74,173,0.12); padding: 14px; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="clock" style="width: 22px; height: 22px; color: #60a5fa; flex-shrink: 0;"></i>
+                        <div>
+                            <div style="font-size: 10px; color: #93c5fd;">Durée recommandée</div>
+                            <div id="fund-modal-duration" style="font-size: 14px; font-weight: 700; color: #f1f5f9;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Badge -->
+                <div id="fund-modal-risk-badge" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(100,100,100,0.2);">
+                    <i data-lucide="shield" style="width: 18px; height: 18px;"></i>
+                    <div>
+                        <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Niveau de risque : </span>
+                        <span id="fund-modal-risk-label" style="font-size: 10px; font-weight: 700; text-transform: uppercase;"></span>
+                    </div>
+                </div>
+
+                <!-- Fee Transparency -->
+                <div>
+                    <h4 style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #3b82f6; margin: 0 0 8px;">
+                        <i data-lucide="percent" style="width: 12px; height: 12px; margin-right: 4px;"></i>Transparence des frais
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                        <div style="background: rgba(10,15,29,0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px;">Frais d'entrée</div>
+                            <div id="fund-modal-entry-fee" style="font-size: 16px; font-weight: 800; color: #fff;"></div>
+                        </div>
+                        <div style="background: rgba(10,15,29,0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px;">Frais de sortie</div>
+                            <div id="fund-modal-exit-fee" style="font-size: 16px; font-weight: 800; color: #fff;"></div>
+                        </div>
+                        <div style="background: rgba(10,15,29,0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px;">Gestion annuelle</div>
+                            <div id="fund-modal-mgmt-fee" style="font-size: 16px; font-weight: 800; color: #fff;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Min Investment -->
+                <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.12); border-radius: 10px; padding: 12px 14px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="wallet" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Investissement minimum</span>
+                    </div>
+                    <span id="fund-modal-min-invest" style="font-size: 14px; font-weight: 700; color: var(--primary);"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-outline-primary btn-close-modal" style="border-radius: 8px;">Fermer</button>
+                <button class="btn btn-sm btn-primary" id="btn-fund-invest" style="border-radius: 8px; font-weight: 700;">
+                    <i data-lucide="arrow-right" style="width: 14px; height: 14px; margin-right: 4px;"></i>Investir maintenant
+                </button>
             </div>
         </div>
     </div>
@@ -1149,6 +1739,28 @@
                 <button class="btn btn-primary" id="btn-download-document-action">
                     <i data-lucide="download"></i> Télécharger le PDF complet
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: 2FA WITHDRAWAL CONFIRMATION [NEW] -->
+    <div class="modal-backdrop" id="withdrawal-2fa-modal" style="display: none; align-items: center; justify-content: center; z-index: 16000; background: rgba(0,0,0,0.85);">
+        <div class="modal-container modal-sm glass-card" style="width: 320px; text-align: center; padding: 24px; border-radius: 20px; border: 1.5px solid rgba(212, 175, 55, 0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.7);">
+            <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0; display: block;">
+                <h3 style="display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--primary); margin: 0 auto 12px;"><i data-lucide="shield-check"></i> Code 2FA Requis</h3>
+            </div>
+            <div class="modal-body" style="padding-top: 12px;">
+                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+                    Un code de sécurité à 6 chiffres a été envoyé par SMS au numéro associé.
+                </p>
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="withdrawal-2fa-code" style="width: 170px; background: rgba(0,0,0,0.4); border: 1.5px solid var(--primary); border-radius: 8px; padding: 10px; text-align: center; font-size: 22px; letter-spacing: 4px; color: #fff; font-weight: bold; outline: none;" maxlength="6" placeholder="000000" autocomplete="off">
+                    <span style="display: block; font-size: 10px; color: var(--text-secondary); margin-top: 8px;">Entrez <strong>123456</strong> pour confirmer la transaction.</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary flex-1" id="btn-cancel-withdrawal-2fa">Annuler</button>
+                <button class="btn btn-primary flex-1" id="btn-confirm-withdrawal-2fa">Valider</button>
             </div>
         </div>
     </div>

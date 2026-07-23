@@ -1,8 +1,11 @@
+"use strict";
 // ==========================================================================
 // AGIR FinTech - InvestmentConfirmation Component (TypeScript)
 // ==========================================================================
-import { supabase } from '../supabaseClient';
-export class InvestmentConfirmation {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.InvestmentConfirmation = void 0;
+const supabaseClient_1 = require("../supabaseClient");
+class InvestmentConfirmation {
     containerId;
     userId;
     ticker;
@@ -116,7 +119,7 @@ export class InvestmentConfirmation {
         }
         try {
             // Call Supabase PL/pgSQL function securely
-            const { data, error } = await supabase.rpc('convert_and_invest', {
+            const { data, error } = await supabaseClient_1.supabase.rpc('convert_and_invest', {
                 p_user_id: this.userId,
                 p_ticker: this.ticker,
                 p_qty: this.quantity,
@@ -162,4 +165,5 @@ export class InvestmentConfirmation {
         }
     }
 }
+exports.InvestmentConfirmation = InvestmentConfirmation;
 //# sourceMappingURL=InvestmentConfirmation.js.map

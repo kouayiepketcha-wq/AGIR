@@ -1,8 +1,11 @@
+"use strict";
 // ==========================================================================
 // AGIR FinTech - CurrencySelector Component (TypeScript)
 // ==========================================================================
-import { supabase } from '../supabaseClient';
-export class CurrencySelector {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CurrencySelector = void 0;
+const supabaseClient_1 = require("../supabaseClient");
+class CurrencySelector {
     containerId;
     selectedCurrency = 'XAF';
     currencyRates = [];
@@ -14,7 +17,7 @@ export class CurrencySelector {
     // 1. Fetch live rates from Supabase
     async loadRates() {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient_1.supabase
                 .from('currency_rates')
                 .select('id, currency_code, currency_name, flag_emoji, rate_to_xaf');
             if (error)
@@ -107,4 +110,5 @@ export class CurrencySelector {
         }
     }
 }
+exports.CurrencySelector = CurrencySelector;
 //# sourceMappingURL=CurrencySelector.js.map

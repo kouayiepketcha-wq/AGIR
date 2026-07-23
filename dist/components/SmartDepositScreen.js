@@ -1,9 +1,12 @@
+"use strict";
 // ==========================================================================
 // AGIR FinTech - SmartDepositScreen Component (TypeScript)
 // ==========================================================================
-import { supabase } from '../supabaseClient';
-import { CurrencySelector } from './CurrencySelector';
-export class SmartDepositScreen {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SmartDepositScreen = void 0;
+const supabaseClient_1 = require("../supabaseClient");
+const CurrencySelector_1 = require("./CurrencySelector");
+class SmartDepositScreen {
     containerId;
     selectorInstance;
     currentRate = 1.0;
@@ -18,7 +21,7 @@ export class SmartDepositScreen {
     async init() {
         this.renderContainer();
         // Instantiate selector inside the nested div
-        this.selectorInstance = new CurrencySelector('nested-currency-selector', (rate) => {
+        this.selectorInstance = new CurrencySelector_1.CurrencySelector('nested-currency-selector', (rate) => {
             this.currencyCode = rate.currency_code;
             this.currentRate = rate.rate_to_xaf;
             this.updateConversion();
@@ -167,7 +170,7 @@ export class SmartDepositScreen {
         // Call Supabase verification (mocking profile PIN check first)
         try {
             // Verify profile local PIN via Supabase
-            const { data: profile, error: pError } = await supabase
+            const { data: profile, error: pError } = await supabaseClient_1.supabase
                 .from('user_profiles')
                 .select('transaction_pin, cash_balance_xaf')
                 .eq('id', this.userId)
@@ -185,7 +188,7 @@ export class SmartDepositScreen {
             const gateway = this.currencyCode === 'XAF' ? 'GIMAC/CinetPay' : (this.currencyCode === 'USD' || this.currencyCode === 'EUR' ? 'Stripe' : 'Flutterwave');
             // Update User profile balance
             const newBalance = Number(profile.cash_balance_xaf) + creditedAmountXaf;
-            const { error: uError } = await supabase
+            const { error: uError } = await supabaseClient_1.supabase
                 .from('user_profiles')
                 .update({ cash_balance_xaf: newBalance })
                 .eq('id', this.userId);
@@ -202,7 +205,7 @@ export class SmartDepositScreen {
                 payment_gateway: gateway,
                 status: 'success'
             };
-            const { error: tError } = await supabase
+            const { error: tError } = await supabaseClient_1.supabase
                 .from('transactions')
                 .insert([newTransaction]);
             if (tError)
@@ -222,4 +225,5 @@ export class SmartDepositScreen {
         }
     }
 }
+exports.SmartDepositScreen = SmartDepositScreen;
 //# sourceMappingURL=SmartDepositScreen.js.map

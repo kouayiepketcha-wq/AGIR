@@ -11,12 +11,19 @@ export interface CurrencyRate {
   updated_at?: string;
 }
 
+export type KycStatus = 'unverified' | 'pending' | 'verified';
+export type TransactionStatus = 'pending' | 'processing' | 'success' | 'failed' | 'expired';
+
 export interface UserProfile {
   id: string;
   full_name: string;
   cash_balance_xaf: number;
   transaction_pin: string;
   risk_profile: string;
+  kyc_status: KycStatus;
+  kyc_document_url?: string;
+  limit_daily_xaf: number;
+  limit_monthly_xaf: number;
   updated_at?: string;
 }
 
@@ -39,7 +46,18 @@ export interface Transaction {
   exchange_rate: number;
   amount_xaf: number;
   payment_gateway: string;
-  status: 'pending' | 'success' | 'failed';
+  status: TransactionStatus;
+  idempotency_key?: string;
+  created_at?: string;
+}
+
+export interface PaymentAuditLog {
+  id?: string;
+  user_id: string;
+  transaction_id?: string;
+  action: string;
+  amount_xaf?: number;
+  details: string;
   created_at?: string;
 }
 
@@ -54,7 +72,7 @@ export interface FXConversionResult {
 }
 
 export interface PaymentGatewayConfig {
-  gateway: 'GIMAC' | 'CinetPay' | 'Stripe' | 'Flutterwave';
+  gateway: 'GIMAC' | 'CinetPay' | 'Stripe' | 'Flutterwave' | 'BankTransfer';
   currencyCode: string;
   isInternational: boolean;
   apiEndpoint?: string;
